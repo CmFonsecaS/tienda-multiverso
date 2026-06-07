@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catálogo – TIENDA MULTIVERSO</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="../css/styles.css" rel="stylesheet"/>
+</head>
+<body>
+
+<div id="navbar-container"></div>
+
+<!-- HERO BANNER -->
+<div class="hero-banner">
+  <div class="container position-relative">
+    <h1>FIGURAS DE <span>COLECCIÓN</span></h1>
+    <p>Las mejores figuras articuladas Marvel – Ediciones limitadas y series especiales</p>
+  </div>
+</div>
+
+<!-- FILTROS -->
+<div class="container mt-4">
+  <div class="filtros-bar">
+    <div class="row g-2 align-items-center">
+      <div class="col-12 col-sm-4 col-md-3">
+        <input type="text" class="form-control form-control-sm" id="buscar" placeholder="🔍 Buscar figura..." oninput="filtrar()"/>
+      </div>
+      <div class="col-6 col-sm-4 col-md-2">
+        <select class="form-select form-select-sm" id="filtro-cat" onchange="filtrar()">
+          <option value="">Todas las categorías</option>
+          <option>Iron Man</option>
+          <option>Hulk</option>
+          <option>X-Men</option>
+          <option>Spider-Man</option>
+          <option>Deadpool</option>
+          <option>Villanos</option>
+        </select>
+      </div>
+      <div class="col-6 col-sm-4 col-md-2">
+        <select class="form-select form-select-sm" id="filtro-orden" onchange="filtrar()">
+          <option value="">Ordenar por</option>
+          <option value="precio-asc">Precio: menor a mayor</option>
+          <option value="precio-desc">Precio: mayor a menor</option>
+          <option value="nombre">Nombre A-Z</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-auto ms-md-auto">
+        <span id="contador-resultados" class="text-muted" style="font-size:0.85rem;"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRID PRODUCTOS -->
+  <div class="row g-3" id="grid-productos">
+    <!-- Se renderiza con JS -->
+  </div>
+
+  <div id="sin-resultados" class="text-center py-5 d-none">
+    <div style="font-size:3rem;">🔍</div>
+    <p class="text-muted">No se encontraron figuras con esos filtros.</p>
+    <button class="btn btn-marvel-outline" onclick="limpiarFiltros()">Limpiar filtros</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="brand-footer">TIENDA MULTIVERSO</div>
+  <p class="mt-2 mb-0" style="font-size:0.8rem;">© 2026 – Tienda Multiverso | Desarrollo FullStack II</p>
+</footer> 
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/navbar.js"></script>
+<script>
+  // Verificar sesión
+  if (!requiereLogin()) { /* redirige */ }
+
+  renderNavbar('catalogo');
+
+  function renderProductos(lista) {
+    const grid = document.getElementById('grid-productos');
+    const sinRes = document.getElementById('sin-resultados');
+    document.getElementById('contador-resultados').textContent = `${lista.length} figura(s)`;
+
+    if (lista.length === 0) {
+      grid.innerHTML = '';
+      sinRes.classList.remove('d-none');
+      return;
+    }
+    sinRes.classList.add('d-none');
+
+    grid.innerHTML = lista.map(p => {
+      const sinStock = p.stock <= 0;
+      const stockBadge = sinStock
+        ? `<span class="badge bg-danger stock-badge">Sin stock</span>`
+        : p.stock <= 3
+          ? `<span class="badge bg-warning text-dark stock-badge">¡Solo ${p.stock} disponibles!</span>`
+          : `<span class="badge bg-success stock-badge">En stock (${p.stock})</span>`;
+
+      const imgPath = obtenerRuta(p.imagen);
+
+      return `
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="card-producto card">
+          <div class="img-container">
+            <img src="${imgPath}" alt="${p.nombre}"/>
+          </div>
+          <div class="card-body d-flex flex-column">
+            <span class="badge-serie">${p.serie}</span>
+            <h6 class="card-title">${p.nombre}</h6>
+            <p class="text-muted" style="font-size:0.78rem; flex:1;">${p.descripcion.substring(0,80)}...</p>
+            ${stockBadge}
+            <div class="d-flex justify-content-between align-items-center mt-2 mb-2">
+              <span class="precio">${formatearPrecio(p.precio)}</span>
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-marvel-outline flex-shrink-0" onclick="verDetalle(${p.id})" title="Ver detalle">🔍</button>
+              <button class="btn-agregar btn btn-sm ${sinStock ? 'disabled' : ''}" 
+                      onclick="${sinStock ? '' : `agregarAlCarrito(${p.id})`}"
+                      ${sinStock ? 'disabled' : ''}>
+                ${sinStock ? 'Sin Stock' : 'Agregar 🛒'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function filtrar() {
+    let lista = getProductos();
+    const buscar = document.getElementById('buscar').value.toLowerCase();
+    const cat = document.getElementById('filtro-cat').value;
+    const orden = document.getElementById('filtro-orden').value;
+
+    if (buscar) {
+      lista = lista.filter(p => p.nombre.toLowerCase().includes(buscar) || p.serie.toLowerCase().includes(buscar));
+    }
+    if (cat) {
+      lista = lista.filter(p => p.categoria === cat);
+    }
+    if (orden === 'precio-asc') lista.sort((a,b) => a.precio - b.precio);
+    if (orden === 'precio-desc') lista.sort((a,b) => b.precio - a.precio);
+    if (orden === 'nombre') lista.sort((a,b) => a.nombre.localeCompare(b.nombre));
+
+    renderProductos(lista);
+  }
+
+  function limpiarFiltros() {
+    document.getElementById('buscar').value = '';
+    document.getElementById('filtro-cat').value = '';
+    document.getElementById('filtro-orden').value = '';
+    filtrar();
+  }
+
+  // Modal detalle
+  function verDetalle(id) {
+    const p = getProductos().find(x => x.id === id);
+    if (!p) return;
+    const imgPath = obtenerRuta(p.imagen);
+
+    let modal = document.getElementById('modal-detalle');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'modal-detalle';
+      modal.className = 'modal fade';
+      modal.tabIndex = -1;
+      document.body.appendChild(modal);
+    }
+
+    modal.innerHTML = `
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="border-radius:12px; overflow:hidden;">
+        <div class="modal-header" style="background:var(--azul-oscuro); color:white;">
+          <h5 class="modal-title" style="font-family:'Bangers',cursive; letter-spacing:2px;">${p.nombre}</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-center mb-3">
+            <img src="${imgPath}" alt="${p.nombre}" style="max-height:200px; max-width:100%; object-fit:contain;"/>
+          </div>
+          <span class="badge-serie">${p.serie}</span>
+          <p class="mt-2">${p.descripcion}</p>
+          <hr/>
+          <div class="d-flex justify-content-between">
+            <span><strong>Precio:</strong></span>
+            <span style="font-family:'Bangers',cursive; font-size:1.4rem; color:var(--rojo-marvel);">${formatearPrecio(p.precio)}</span>
+          </div>
+          <div class="d-flex justify-content-between mt-1">
+            <span><strong>Disponibilidad:</strong></span>
+            <span class="badge ${p.stock>0?'bg-success':'bg-danger'}">${p.stock>0?`${p.stock} en stock`:'Sin stock'}</span>
+          </div>
+          <div class="d-flex justify-content-between mt-1">
+            <span><strong>Categoría:</strong></span>
+            <span>${p.categoria}</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button class="btn btn-marvel" onclick="agregarAlCarrito(${p.id}); bootstrap.Modal.getInstance(document.getElementById('modal-detalle')).hide();" ${p.stock<=0?'disabled':''}>
+            ${p.stock<=0?'Sin Stock':'Agregar al carrito 🛒'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+
+    new bootstrap.Modal(modal).show();
+  }
+
+  // Render inicial
+  filtrar();
+</script>
+</body>
+</html>

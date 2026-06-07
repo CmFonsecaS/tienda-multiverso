@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mi Perfil – TIENDA MULTIVERSO</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="../css/styles.css" rel="stylesheet"/>
+</head>
+<body>
+<div id="navbar-container"></div>
+
+<div class="container mt-4 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="form-card">
+
+        <!-- AVATAR -->
+        <div class="text-center mb-4">
+          <div class="avatar-perfil" id="avatar-iniciales">TK</div>
+          <h4 style="font-family:'Bangers',cursive; letter-spacing:2px; color:var(--azul-oscuro);" id="titulo-usuario">Mi Perfil</h4>
+          <span id="badge-rol" class="badge"></span>
+        </div>
+
+        <div id="alerta-perfil" class="alert d-none" role="alert"></div>
+
+        <!-- TABS -->
+        <ul class="nav nav-tabs mb-4" id="perfilTabs">
+          <li class="nav-item">
+            <button class="nav-link active" id="tab-datos" onclick="mostrarTab('datos')">📋 Mis Datos</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" id="tab-pass" onclick="mostrarTab('pass')">🔐 Contraseña</button>
+          </li>
+        </ul>
+
+        <!-- TAB DATOS -->
+        <div id="contenido-datos">
+          <div class="mb-3">
+            <label class="form-label">Nombre completo *</label>
+            <input type="text" class="form-control" id="p-nombre" maxlength="60"/>
+            <div class="form-text text-danger d-none" id="err-p-nombre">Mínimo 3 caracteres.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Correo electrónico *</label>
+            <input type="email" class="form-control" id="p-email"/>
+            <div class="form-text text-danger d-none" id="err-p-email">Correo inválido.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Teléfono</label>
+            <input type="text" class="form-control" id="p-telefono" maxlength="15"/>
+            <div class="form-text text-danger d-none" id="err-p-telefono">Formato inválido.</div>
+          </div>
+          <div class="mb-4">
+            <label class="form-label">Dirección de envío</label>
+            <input type="text" class="form-control" id="p-direccion" maxlength="120"/>
+          </div>
+          <button class="btn btn-marvel w-100" onclick="guardarDatos()">💾 Guardar cambios</button>
+        </div>
+
+        <!-- TAB CONTRASEÑA -->
+        <div id="contenido-pass" class="d-none">
+          <div class="mb-3">
+            <label class="form-label">Contraseña actual *</label>
+            <div class="input-group">
+              <input type="password" class="form-control" id="p-pass-actual"/>
+              <button class="btn btn-outline-secondary" type="button" onclick="toggleVer('p-pass-actual')">👁</button>
+            </div>
+            <div class="form-text text-danger d-none" id="err-pass-actual">Contraseña incorrecta.</div>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Nueva contraseña *</label>
+            <div class="input-group">
+              <input type="password" class="form-control" id="p-nueva-pass"
+                     oninput="mostrarValidacionesPassword(this.value, 'req-p-pass')"/>
+              <button class="btn btn-outline-secondary" type="button" onclick="toggleVer('p-nueva-pass')">👁</button>
+            </div>
+          </div>
+          <div class="border rounded p-2 mb-3" id="req-p-pass" style="background:#fafafa;"></div>
+          <div class="mb-4">
+            <label class="form-label">Confirmar nueva contraseña *</label>
+            <div class="input-group">
+              <input type="password" class="form-control" id="p-conf-pass"/>
+              <button class="btn btn-outline-secondary" type="button" onclick="toggleVer('p-conf-pass')">👁</button>
+            </div>
+            <div class="form-text text-danger d-none" id="err-p-conf">Las contraseñas no coinciden.</div>
+          </div>
+          <button class="btn btn-marvel w-100" onclick="cambiarContrasena()">🔐 Cambiar contraseña</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="brand-footer">TIENDA MULTIVERSO</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/navbar.js"></script>
+<script>
+  if (!requiereLogin()) {}
+  renderNavbar('');
+  mostrarValidacionesPassword('', 'req-p-pass');
+
+  const usuario = getUsuarioActual();
+
+  // Cargar datos
+  document.getElementById('p-nombre').value = usuario.nombre;
+  document.getElementById('p-email').value = usuario.email;
+  document.getElementById('p-telefono').value = usuario.telefono || '';
+  document.getElementById('p-direccion').value = usuario.direccion || '';
+
+  // Avatar iniciales
+  const iniciales = usuario.nombre.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+  document.getElementById('avatar-iniciales').textContent = iniciales;
+  document.getElementById('titulo-usuario').textContent = usuario.nombre;
+
+  const badgeRol = document.getElementById('badge-rol');
+  if (usuario.rol === 'admin') {
+    badgeRol.className = 'badge bg-warning text-dark';
+    badgeRol.textContent = '👑 Administrador';
+  } else {
+    badgeRol.className = 'badge bg-primary';
+    badgeRol.textContent = '🦸 Cliente';
+  }
+
+  function toggleVer(id) {
+    const inp = document.getElementById(id);
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+  }
+
+  function mostrarTab(tab) {
+    document.getElementById('contenido-datos').classList.add('d-none');
+    document.getElementById('contenido-pass').classList.add('d-none');
+    document.getElementById('tab-datos').classList.remove('active');
+    document.getElementById('tab-pass').classList.remove('active');
+
+    document.getElementById(`contenido-${tab}`).classList.remove('d-none');
+    document.getElementById(`tab-${tab}`).classList.add('active');
+    document.getElementById('alerta-perfil').classList.add('d-none');
+  }
+
+  function guardarDatos() {
+    ['err-p-nombre','err-p-email','err-p-telefono'].forEach(id => {
+      document.getElementById(id).classList.add('d-none');
+    });
+    const alerta = document.getElementById('alerta-perfil');
+    alerta.classList.add('d-none');
+
+    const nombre = document.getElementById('p-nombre').value.trim();
+    const email = document.getElementById('p-email').value.trim();
+    const telefono = document.getElementById('p-telefono').value.trim();
+    const direccion = document.getElementById('p-direccion').value.trim();
+
+    let valido = true;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (nombre.length < 3) { document.getElementById('err-p-nombre').classList.remove('d-none'); valido = false; }
+    if (!emailRegex.test(email)) { document.getElementById('err-p-email').classList.remove('d-none'); valido = false; }
+    if (telefono && !/^\+?[0-9]{9,13}$/.test(telefono)) { document.getElementById('err-p-telefono').classList.remove('d-none'); valido = false; }
+    if (!valido) return;
+
+    // Verificar email único (otro usuario)
+    const usuarios = getUsuarios();
+    const duplicado = usuarios.find(u => u.email === email && u.id !== usuario.id);
+    if (duplicado) {
+      alerta.textContent = 'Ese correo ya está en uso por otra cuenta.';
+      alerta.classList.remove('d-none', 'alert-success');
+      alerta.classList.add('alert-danger');
+      return;
+    }
+
+    const idx = usuarios.findIndex(u => u.id === usuario.id);
+    usuarios[idx] = { ...usuarios[idx], nombre, email, telefono, direccion };
+    guardarUsuarios(usuarios);
+    setUsuarioActual(usuarios[idx]);
+
+    // Actualizar UI
+    document.getElementById('avatar-iniciales').textContent = nombre.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+    document.getElementById('titulo-usuario').textContent = nombre;
+
+    alerta.textContent = '✅ Datos actualizados correctamente.';
+    alerta.classList.remove('d-none', 'alert-danger');
+    alerta.classList.add('alert-success');
+    mostrarToast('Perfil actualizado', 'success');
+  }
+
+  function cambiarContrasena() {
+    ['err-pass-actual','err-p-conf'].forEach(id => document.getElementById(id).classList.add('d-none'));
+    const alerta = document.getElementById('alerta-perfil');
+    alerta.classList.add('d-none');
+
+    const actual = document.getElementById('p-pass-actual').value;
+    const nueva = document.getElementById('p-nueva-pass').value;
+    const conf = document.getElementById('p-conf-pass').value;
+
+    let valido = true;
+
+    if (actual !== usuario.password) {
+      document.getElementById('err-pass-actual').classList.remove('d-none');
+      valido = false;
+    }
+    if (!passwordValida(nueva)) {
+      alerta.textContent = 'La nueva contraseña no cumple los requisitos de seguridad.';
+      alerta.classList.remove('d-none','alert-success');
+      alerta.classList.add('alert-danger');
+      valido = false;
+    }
+    if (nueva !== conf) {
+      document.getElementById('err-p-conf').classList.remove('d-none');
+      valido = false;
+    }
+    if (!valido) return;
+
+    const usuarios = getUsuarios();
+    const idx = usuarios.findIndex(u => u.id === usuario.id);
+    usuarios[idx].password = nueva;
+    guardarUsuarios(usuarios);
+    setUsuarioActual(usuarios[idx]);
+
+    document.getElementById('p-pass-actual').value = '';
+    document.getElementById('p-nueva-pass').value = '';
+    document.getElementById('p-conf-pass').value = '';
+    mostrarValidacionesPassword('', 'req-p-pass');
+
+    alerta.textContent = '✅ Contraseña actualizada exitosamente.';
+    alerta.classList.remove('d-none','alert-danger');
+    alerta.classList.add('alert-success');
+    mostrarToast('Contraseña actualizada', 'success');
+  }
+</script>
+</body>
+</html>

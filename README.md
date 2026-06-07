@@ -31,3 +31,19 @@ Este es un proyecto de aplicación web sobre una tienda en línea de figuras de 
 ---
 
 ## 🛠️ Galería
+
+<img width="545" height="723" alt="Snag_9f844d" src="https://github.com/user-attachments/assets/c98b271d-a1fb-426d-9e58-577b572faf5b" />
+<img width="1912" height="907" alt="Snag_9f8d08" src="https://github.com/user-attachments/assets/bd77ed72-01f1-41c7-ad1b-ebca57046056" />
+<img width="1369" height="917" alt="Snag_9f9526" src="https://github.com/user-attachments/assets/b226cb57-2e9b-4e8a-bc0f-71a61a017513" />
+<img width="742" height="855" alt="Snag_9f9b7f" src="https://github.com/user-attachments/assets/8d020711-b068-4453-85d8-7e2ee17d8002" />
+<img width="731" height="890" alt="Snag_9fa245" src="https://github.com/user-attachments/assets/143e574b-0a87-4f74-bcc0-773fd103f9d6" />
+<img width="662" height="828" alt="Snag_9fb10a" src="https://github.com/user-attachments/assets/0a0d4419-2a11-466d-9d2b-884abf37d229" />
+
+
+
+
+
+
+
+
+

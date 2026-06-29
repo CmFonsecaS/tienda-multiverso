@@ -1,0 +1,111 @@
+<div class="container my-5">
+  <h2 class="mb-4 fw-bold text-dark" style="font-family: 'Bangers', cursive; letter-spacing: 2px;">
+    CARRITO DE COMPRAS 🛒
+  </h2>
+
+  <div *ngIf="carritoDetalle.length === 0" class="text-center py-5 bg-white rounded shadow-sm">
+    <p style="font-size: 4rem;">🛒</p>
+    <h3>Tu carrito está vacío</h3>
+    <p class="text-muted">Aún no has agregado figuras coleccionables a tu carrito.</p>
+    <a routerLink="/catalogo" class="btn btn-marvel rounded-pill px-4 mt-3">Explorar Figuras</a>
+  </div>
+
+  <div *ngIf="carritoDetalle.length > 0" class="row g-4">
+    <!-- Lista de Items -->
+    <div class="col-12 col-lg-8">
+      <div class="card border-0 shadow-sm p-4 rounded" style="background: white;">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+          <span class="text-muted">Productos en el carro</span>
+          <button class="btn btn-sm btn-outline-danger rounded-pill px-3" (click)="vaciar()">
+            Vaciar Carrito 🗑️
+          </button>
+        </div>
+
+        <div *ngFor="let item of carritoDetalle" class="row align-items-center g-3 mb-3 pb-3 border-bottom">
+          <!-- Imagen -->
+          <div class="col-3 col-sm-2 text-center bg-light rounded p-2">
+            <img [src]="item.producto.imagen" [alt]="item.producto.nombre" style="max-height: 70px; max-width: 100%; object-fit: contain;"/>
+          </div>
+
+          <!-- Detalles -->
+          <div class="col-9 col-sm-4">
+            <h6 class="mb-1 fw-bold text-dark">{{ item.producto.nombre }}</h6>
+            <span class="badge bg-dark" style="font-size:0.7rem;">{{ item.producto.serie }}</span>
+            <div class="text-muted d-block d-sm-none mt-1" style="font-size: 0.85rem;">
+              Precio: {{ item.producto.precio | formatearPrecio }}
+            </div>
+          </div>
+
+          <!-- Controles de Cantidad -->
+          <div class="col-6 col-sm-3 d-flex align-items-center justify-content-start justify-content-sm-center">
+            <button class="btn btn-sm btn-outline-dark rounded-circle" (click)="decrementar(item.producto.id)" style="width:28px; height:28px; line-height:1; padding:0;">-</button>
+            <span class="mx-3 fw-bold">{{ item.cantidad }}</span>
+            <button class="btn btn-sm btn-outline-dark rounded-circle" (click)="incrementar(item.producto.id)" style="width:28px; height:28px; line-height:1; padding:0;">+</button>
+          </div>
+
+          <!-- Precio Total -->
+          <div class="col-4 col-sm-2 text-end">
+            <span class="fw-bold text-danger" style="font-size: 1rem;">
+              {{ (item.producto.precio * item.cantidad) | formatearPrecio }}
+            </span>
+          </div>
+
+          <!-- Borrar -->
+          <div class="col-2 col-sm-1 text-center">
+            <button class="btn btn-sm btn-link text-danger p-0" (click)="eliminar(item.producto.id)" title="Eliminar del carrito">
+              🗑️
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-3">
+          <a routerLink="/catalogo" class="btn btn-outline-dark rounded-pill px-4" style="font-size: 0.9rem;">
+            ← Seguir Comprando
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resumen de Compra -->
+    <div class="col-12 col-lg-4">
+      <div class="card border-0 shadow-sm p-4 rounded" style="background: white;">
+        <h4 class="mb-4 fw-bold text-dark" style="font-family:'Bangers',cursive; letter-spacing:1px;">
+          RESUMEN
+        </h4>
+
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Subtotal:</span>
+          <span class="fw-bold text-dark">{{ subtotal | formatearPrecio }}</span>
+        </div>
+
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Envío:</span>
+          <span class="fw-bold text-dark" [ngClass]="costoEnvio === 0 ? 'text-success' : ''">
+            {{ costoEnvio === 0 ? 'Gratis' : (costoEnvio | formatearPrecio) }}
+          </span>
+        </div>
+
+        <!-- Alerta de envío gratis -->
+        <div *ngIf="costoEnvio > 0" class="alert alert-info py-2 px-3 mt-3 mb-2" style="font-size:0.8rem;">
+          ¡Agrega <strong>{{ (30000 - subtotal) | formatearPrecio }}</strong> más para tener <strong>Envío Gratis</strong>!
+        </div>
+        <div *ngIf="costoEnvio === 0 && subtotal > 0" class="alert alert-success py-2 px-3 mt-3 mb-2" style="font-size:0.8rem;">
+          🎉 ¡Tienes **Envío Gratis** en esta compra!
+        </div>
+
+        <hr />
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <span class="fw-bold text-dark" style="font-size: 1.1rem;">Total:</span>
+          <span class="fw-bold text-danger" style="font-size: 1.6rem; font-family:'Bangers',cursive;">
+            {{ total | formatearPrecio }}
+          </span>
+        </div>
+
+        <button class="btn btn-marvel w-100 py-3 rounded-pill" (click)="irAPagar()">
+          Proceder al Pago
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

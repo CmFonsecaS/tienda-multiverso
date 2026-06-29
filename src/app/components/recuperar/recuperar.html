@@ -1,0 +1,53 @@
+<div class="d-flex flex-column justify-content-center" style="background: linear-gradient(135deg, #1a1a2e 0%, #8b0000 100%); min-height: 100vh; padding: 40px 0;">
+  <!-- LOGO / HEADER -->
+  <div class="text-center mb-4">
+    <div style="font-family:'Bangers',cursive; font-size:3rem; color:#e23636; letter-spacing:4px;">
+      TIENDA <span style="color:#f5c518;">MULTIVERSO</span>
+    </div>
+    <p style="color:#ccc; font-family:'Nunito',sans-serif;">¿Perdiste tu llave de acceso al Multiverso?</p>
+  </div>
+
+  <!-- FORMULARIO RECUPERAR -->
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+        <div class="form-card">
+          <h2 class="text-center mb-1">Recuperar Acceso</h2>
+          <p class="text-center text-muted mb-4" style="font-size:0.9rem;">Ingresa tu correo para enviarte las instrucciones</p>
+
+          <div *ngIf="successMessage" class="alert alert-success" role="alert">
+            {{ successMessage }}
+          </div>
+
+          <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+            {{ errorMessage }}
+          </div>
+
+          <form [formGroup]="recuperarForm" (ngSubmit)="enviarEnlace()">
+            <div class="mb-4">
+              <label class="form-label">Correo electrónico</label>
+              <input type="email" class="form-control" formControlName="email" placeholder="ejemplo@correo.com"
+                     [ngClass]="{'is-invalid': recuperarForm.get('email')?.touched && recuperarForm.get('email')?.invalid}"/>
+              <div class="invalid-feedback">
+                Ingresa un correo electrónico válido.
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-marvel w-100 mb-3" [disabled]="recuperarForm.invalid">
+              Enviar Instrucciones
+            </button>
+          </form>
+
+          <p class="text-center mb-0" style="font-size:0.9rem;">
+            Volver al <a routerLink="/login" style="color:var(--rojo-marvel); font-weight:700; text-decoration: none;">Inicio de sesión</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER SIMPLE -->
+  <p class="text-center mt-4 mb-0" style="color:rgba(255,255,255,0.4); font-size:0.8rem;">
+    © 2026 Tienda Multiverso – Desarrollo Full Stack II
+  </p>
+</div>

@@ -1,0 +1,91 @@
+<div class="container my-5">
+  <h2 class="mb-4 fw-bold text-dark" style="font-family: 'Bangers', cursive; letter-spacing: 2px;">
+    MIS PEDIDOS 📦
+  </h2>
+
+  <!-- Sin Pedidos -->
+  <div *ngIf="pedidos.length === 0" class="text-center py-5 bg-white rounded shadow-sm">
+    <p style="font-size: 4rem;">📦</p>
+    <h3>No tienes pedidos registrados</h3>
+    <p class="text-muted">Aún no has realizado ninguna compra en la Tienda Multiverso.</p>
+    <a routerLink="/catalogo" class="btn btn-marvel rounded-pill px-4 mt-3">Ir de Compras 🛒</a>
+  </div>
+
+  <!-- Listado de Pedidos -->
+  <div *ngIf="pedidos.length > 0" class="row g-3">
+    <div class="col-12">
+      
+      <div *ngFor="let p of pedidos" class="card border-0 shadow-sm mb-4 rounded" style="background: white;">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+          <div>
+            <span class="fw-bold" style="font-size:1.1rem; font-family:'Bangers',cursive; letter-spacing: 1px;">PEDIDO #{{ p.id }}</span>
+            <span class="text-white-50 ms-3" style="font-size:0.8rem;">{{ p.fecha }}</span>
+          </div>
+          <div>
+            <span class="badge" 
+                  [ngClass]="{
+                    'bg-warning text-dark': p.estado === 'Pendiente',
+                    'bg-success': p.estado === 'Entregado',
+                    'bg-danger': p.estado === 'Cancelado'
+                  }">
+              {{ p.estado }}
+            </span>
+          </div>
+        </div>
+
+        <div class="card-body p-4">
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead>
+                <tr>
+                  <th style="width: 80px;">Figura</th>
+                  <th>Detalle</th>
+                  <th class="text-center" style="width: 100px;">Precio Unit.</th>
+                  <th class="text-center" style="width: 100px;">Cantidad</th>
+                  <th class="text-end" style="width: 120px;">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of p.productos">
+                  <!-- Imagen -->
+                  <td>
+                    <div class="bg-light rounded text-center p-1" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                      <img [src]="item.producto.imagen" [alt]="item.producto.nombre" style="max-height: 50px; max-width: 100%; object-fit: contain;"/>
+                    </div>
+                  </td>
+                  <!-- Detalle -->
+                  <td>
+                    <div class="fw-bold text-dark">{{ item.producto.nombre }}</div>
+                    <span class="badge bg-secondary" style="font-size:0.65rem;">{{ item.producto.serie }}</span>
+                  </td>
+                  <!-- Precio Unitario -->
+                  <td class="text-center text-muted" style="font-size: 0.9rem;">
+                    {{ item.producto.precio | formatearPrecio }}
+                  </td>
+                  <!-- Cantidad -->
+                  <td class="text-center fw-bold">{{ item.cantidad }}</td>
+                  <!-- Total -->
+                  <td class="text-end fw-bold text-danger">
+                    {{ (item.producto.precio * item.cantidad) | formatearPrecio }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-3">
+            <span class="text-muted">Despachado a: <strong>{{ p.usuarioNombre }}</strong></span>
+            <div>
+              <span class="text-muted me-2">Total del Pedido:</span>
+              <span class="fw-bold text-danger" style="font-size: 1.4rem; font-family:'Bangers',cursive;">
+                {{ p.total | formatearPrecio }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

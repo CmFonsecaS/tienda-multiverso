@@ -1,0 +1,129 @@
+<!-- HERO BANNER -->
+<header class="hero-banner">
+  <div class="container">
+    <h1>FIGURAS DE <span>COLECCIÓN</span></h1>
+    <p class="mb-0">Las mejores figuras articuladas Marvel – Ediciones limitadas y series especiales</p>
+  </div>
+</header>
+
+<div class="container my-4">
+  
+  <!-- FILTROS Y BUSQUEDA -->
+  <div class="filtros-bar">
+    <div class="row align-items-center g-3">
+      <!-- Categorias -->
+      <div class="col-12 col-lg-8">
+        <div class="d-flex flex-wrap gap-2">
+          <button *ngFor="let cat of categorias" 
+                  type="button" 
+                  class="btn btn-sm rounded-pill px-3"
+                  [ngClass]="categoriaSeleccionada === cat ? 'btn-danger' : 'btn-outline-dark'"
+                  (click)="seleccionarCategoria(cat)">
+            {{ cat }}
+          </button>
+        </div>
+      </div>
+      <!-- Buscador -->
+      <div class="col-12 col-lg-4">
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0 text-muted">🔍</span>
+          <input type="text" 
+                 class="form-control border-start-0 ps-0" 
+                 placeholder="Buscar figura..." 
+                 [(ngModel)]="searchQuery" 
+                 (ngModelChange)="onSearchChange()"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTADO DE PRODUCTOS -->
+  <div class="row g-4">
+    <!-- Empty State -->
+    <div *ngIf="productosFiltrados.length === 0" class="col-12 text-center py-5">
+      <p style="font-size: 3rem;">🕵️‍♂️</p>
+      <h4 class="text-muted">No se encontraron figuras de colección para tu búsqueda.</h4>
+      <p class="text-secondary">Intenta buscar otra serie, nombre o categoría.</p>
+    </div>
+
+    <!-- Product Card -->
+    <div *ngFor="let p of productosFiltrados" class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card-producto">
+        <div class="img-container" (click)="abrirDetalle(p)" style="cursor: pointer;">
+          <img [src]="p.imagen" [alt]="p.nombre"/>
+        </div>
+        <div class="card-body d-flex flex-column">
+          <span class="badge-serie align-self-start">{{ p.serie }}</span>
+          <h5 class="card-title text-truncate" (click)="abrirDetalle(p)" style="cursor: pointer;" [title]="p.nombre">{{ p.nombre }}</h5>
+          <p class="text-muted mb-2" style="font-size: 0.8rem;">Categoría: <strong>{{ p.categoria }}</strong></p>
+          
+          <div class="d-flex justify-content-between align-items-center mt-auto mb-3">
+            <span class="precio">{{ p.precio | formatearPrecio }}</span>
+            <span class="stock-badge" [ngClass]="p.stock > 0 ? 'text-success' : 'text-danger'">
+              {{ p.stock > 0 ? p.stock + ' disp.' : 'Agotado' }}
+            </span>
+          </div>
+
+          <button class="btn-agregar" 
+                  [disabled]="p.stock <= 0" 
+                  (click)="agregarAlCarro(p.id)">
+            {{ p.stock > 0 ? 'Agregar 🛒' : 'Agotado 🚫' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DETALLE MODAL DIALOG (CUSTOM IMPLEMENTATION WITHOUT EXTERNAL JS DEP) -->
+<div *ngIf="mostrarModal && productoSeleccionado" 
+     class="modal fade show" 
+     style="display: block; background: rgba(0,0,0,0.65); z-index: 1050; overflow-y: auto;" 
+     tabindex="-1" 
+     role="dialog"
+     (click)="cerrarDetalle()">
+  
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document" (click)="$event.stopPropagation()">
+    <div class="modal-content border-0" style="border-radius: var(--radio); overflow: hidden;">
+      <div class="modal-header bg-dark text-white border-0">
+        <h5 class="modal-title" style="font-family: 'Bangers', cursive; font-size: 1.5rem; letter-spacing: 1px;">
+          DETALLE DE PRODUCTO
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="cerrarDetalle()"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="row g-4 align-items-center">
+          <div class="col-12 col-md-5 text-center bg-light rounded p-3">
+            <img [src]="productoSeleccionado.imagen" 
+                 [alt]="productoSeleccionado.nombre" 
+                 style="max-height: 280px; max-width: 100%; object-fit: contain;"/>
+          </div>
+          <div class="col-12 col-md-7">
+            <span class="badge bg-danger mb-2" style="font-size:0.75rem;">{{ productoSeleccionado.serie }}</span>
+            <h3 class="fw-bold mb-1 text-dark">{{ productoSeleccionado.nombre }}</h3>
+            <p class="text-secondary mb-3">Categoría: <strong>{{ productoSeleccionado.categoria }}</strong></p>
+            
+            <h4 class="text-danger fw-bold mb-3" style="font-family:'Bangers',cursive; font-size: 1.8rem; letter-spacing:1px;">
+              {{ productoSeleccionado.precio | formatearPrecio }}
+            </h4>
+            
+            <p class="mb-4" style="font-size:0.9rem; line-height: 1.5; color:#444;">
+              {{ productoSeleccionado.descripcion }}
+            </p>
+            
+            <div class="d-flex align-items-center justify-content-between border-top pt-3">
+              <span class="fw-bold" [ngClass]="productoSeleccionado.stock > 0 ? 'text-success' : 'text-danger'">
+                {{ productoSeleccionado.stock > 0 ? 'Stock Disponible: ' + productoSeleccionado.stock + ' unidades' : 'Agotado temporalmente' }}
+              </span>
+              <button class="btn btn-marvel" 
+                      [disabled]="productoSeleccionado.stock <= 0" 
+                      (click)="agregarAlCarro(productoSeleccionado.id); cerrarDetalle()">
+                Agregar al Carrito 🛒
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,91 @@
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="form-card">
+        
+        <!-- Avatar y Titulo -->
+        <div class="text-center mb-4">
+          <div class="avatar-perfil">
+            {{ usuarioActual?.nombre?.charAt(0) || 'U' }}
+          </div>
+          <h2>Modificar Perfil</h2>
+          <p class="text-muted">Mantén al día tus datos de superhéroe</p>
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+          {{ errorMessage }}
+        </div>
+
+        <form *ngIf="perfilForm" [formGroup]="perfilForm" (ngSubmit)="guardarCambios()">
+          
+          <!-- Nombre -->
+          <div class="mb-3">
+            <label class="form-label">Nombre completo</label>
+            <input type="text" class="form-control" formControlName="nombre"
+                   [ngClass]="{'is-invalid': perfilForm.get('nombre')?.touched && perfilForm.get('nombre')?.invalid}"/>
+            <div class="invalid-feedback">El nombre es requerido (mínimo 3 caracteres).</div>
+          </div>
+
+          <!-- Correo (Deshabilitado) -->
+          <div class="mb-3">
+            <label class="form-label">Correo electrónico (No modificable)</label>
+            <input type="email" class="form-control" formControlName="email"/>
+          </div>
+
+          <!-- Teléfono -->
+          <div class="mb-3">
+            <label class="form-label">Teléfono</label>
+            <input type="text" class="form-control" formControlName="telefono" placeholder="+56912345678"
+                   [ngClass]="{'is-invalid': perfilForm.get('telefono')?.touched && perfilForm.get('telefono')?.invalid}"/>
+            <div class="invalid-feedback">Formato de teléfono no válido (ej. +56912345678).</div>
+          </div>
+
+          <!-- Dirección -->
+          <div class="mb-3">
+            <label class="form-label">Dirección de entrega</label>
+            <input type="text" class="form-control" formControlName="direccion" placeholder="Calle, Número, Ciudad"
+                   [ngClass]="{'is-invalid': perfilForm.get('direccion')?.touched && perfilForm.get('direccion')?.invalid}"/>
+            <div class="invalid-feedback">La dirección es demasiado corta.</div>
+          </div>
+
+          <!-- Contraseña -->
+          <div class="mb-4">
+            <label class="form-label">Contraseña</label>
+            <div class="input-group">
+              <input [type]="showPassword ? 'text' : 'password'" class="form-control" formControlName="password"
+                     [ngClass]="{'is-invalid': perfilForm.get('password')?.touched && (perfilForm.get('password')?.invalid || !isPasswordValid())}"/>
+              <button class="btn btn-outline-secondary" type="button" (click)="togglePasswordVisibility()" title="Mostrar/Ocultar">
+                {{ showPassword ? '🙈' : '👁' }}
+              </button>
+            </div>
+            
+            <!-- Requisitos de Contraseña -->
+            <div class="mt-2 p-2 bg-light rounded" style="font-size: 0.8rem;">
+              <div class="fw-bold mb-1 text-dark">Requisitos de contraseña:</div>
+              <div [ngClass]="passRules.longMin ? 'text-success' : 'text-danger'">
+                {{ passRules.longMin ? '✓' : '✗' }} Mínimo 8 caracteres
+              </div>
+              <div [ngClass]="passRules.longMax ? 'text-success' : 'text-danger'">
+                {{ passRules.longMax ? '✓' : '✗' }} Máximo 20 caracteres
+              </div>
+              <div [ngClass]="passRules.tieneNumero ? 'text-success' : 'text-danger'">
+                {{ passRules.tieneNumero ? '✓' : '✗' }} Al menos un número
+              </div>
+              <div [ngClass]="passRules.tieneMayuscula ? 'text-success' : 'text-danger'">
+                {{ passRules.tieneMayuscula ? '✓' : '✗' }} Al menos una mayúscula
+              </div>
+              <div [ngClass]="passRules.tieneEspecial ? 'text-success' : 'text-danger'">
+                {{ passRules.tieneEspecial ? '✓' : '✗' }} Al menos un carácter especial (!@#$...)
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-marvel w-100" [disabled]="perfilForm.invalid || !isPasswordValid()">
+            Guardar Cambios
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>

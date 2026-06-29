@@ -1,0 +1,140 @@
+<div class="container my-5" style="max-width: 600px;">
+  
+  <h2 class="mb-4 text-center text-dark" style="font-family: 'Bangers', cursive; letter-spacing: 1.5px;">
+    💳 DATOS DE PAGO
+  </h2>
+
+  <!-- FORMULARIO DE PAGO -->
+  <div *ngIf="!pagoCompletado">
+    
+    <!-- CARD 1: RESUMEN DE TU COMPRA -->
+    <div class="card border-0 shadow-sm p-4 mb-4 rounded-4 bg-white">
+      <h5 class="fw-bold text-dark border-bottom pb-2 mb-3" style="font-size: 1.1rem;">Resumen de tu compra</h5>
+      
+      <div class="mb-3">
+        <div *ngFor="let item of carritoDetalle" class="d-flex justify-content-between mb-2">
+          <span class="text-muted">{{ item.producto.nombre }} × {{ item.cantidad }}</span>
+          <span class="fw-bold text-dark">{{ (item.producto.precio * item.cantidad) | formatearPrecio }}</span>
+        </div>
+      </div>
+      
+      <div class="d-flex justify-content-between align-items-center mb-3 pt-2 border-top">
+        <span class="fw-bold text-dark">Total a pagar:</span>
+        <span class="fw-bold text-danger" style="font-family: 'Bangers', cursive; font-size: 1.6rem;">
+          {{ total | formatearPrecio }}
+        </span>
+      </div>
+      
+      <div class="p-3 rounded text-muted text-center bg-light" style="font-size: 0.85rem; border: 1px dashed #ddd;">
+        📦 Envío a: <strong>{{ pagoForm.get('direccion')?.value || usuarioActual.direccion || 'Sin dirección' }}</strong> 
+        <span class="mx-2">|</span> 
+        💳 Método: <strong>tarjeta</strong>
+      </div>
+    </div>
+
+    <!-- CARD 2: DATOS DE TARJETA (SIMULACIÓN) -->
+    <div class="card border-0 shadow-sm p-4 rounded-4 bg-white">
+      <h5 class="fw-bold text-dark border-bottom pb-2 mb-3" style="font-size: 1.1rem;">Datos de tarjeta (simulación)</h5>
+      
+      <form [formGroup]="pagoForm" (ngSubmit)="procesarPago()">
+        
+        <!-- Dirección Completa (Para poder cumplir con la modificación en vivo del perfil) -->
+        <div class="mb-3">
+          <label class="form-label text-muted fw-bold" style="font-size: 0.85rem;">Dirección de Despacho *</label>
+          <input type="text" class="form-control" formControlName="direccion" placeholder="Ingresa tu dirección"
+                 [ngClass]="{'is-invalid': pagoForm.get('direccion')?.touched && pagoForm.get('direccion')?.invalid}"/>
+          <div class="invalid-feedback">La dirección es requerida (mín. 5 caracteres).</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-muted fw-bold" style="font-size: 0.85rem;">Nombre en la tarjeta *</label>
+          <input type="text" class="form-control" formControlName="nombreTarjeta" placeholder="Nombre completo"
+                 [ngClass]="{'is-invalid': pagoForm.get('nombreTarjeta')?.touched && pagoForm.get('nombreTarjeta')?.invalid}"/>
+          <div class="invalid-feedback">El nombre del titular es requerido.</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-muted fw-bold" style="font-size: 0.85rem;">Número de tarjeta *</label>
+          <input type="text" class="form-control" formControlName="numeroTarjeta" placeholder="1234 5678 1234 5678" maxlength="16"
+                 [ngClass]="{'is-invalid': pagoForm.get('numeroTarjeta')?.touched && pagoForm.get('numeroTarjeta')?.invalid}"/>
+          <div class="invalid-feedback">Deben ser exactamente 16 dígitos numéricos.</div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-6">
+            <label class="form-label text-muted fw-bold" style="font-size: 0.85rem;">Fecha de vencimiento *</label>
+            <input type="text" class="form-control" formControlName="expiracion" placeholder="MM/YY" maxlength="5"
+                   (input)="formatExpiracion($event)"
+                   [ngClass]="{'is-invalid': pagoForm.get('expiracion')?.touched && pagoForm.get('expiracion')?.invalid}"/>
+            <div class="invalid-feedback">Formato MM/YY (ej: 12/28).</div>
+          </div>
+          <div class="col-6">
+            <label class="form-label text-muted fw-bold" style="font-size: 0.85rem;">CVV *</label>
+            <input type="password" class="form-control" formControlName="cvv" placeholder="•••" maxlength="3"
+                   [ngClass]="{'is-invalid': pagoForm.get('cvv')?.touched && pagoForm.get('cvv')?.invalid}"/>
+            <div class="invalid-feedback">3 dígitos requeridos.</div>
+          </div>
+        </div>
+
+        <!-- Alerta informativa -->
+        <div class="alert alert-info border-0 rounded p-3 mb-3 d-flex align-items-center" style="background-color: #d1ecf1; color: #0c5460; font-size: 0.85rem;">
+          <span class="me-2">🔒</span>
+          <span><strong>Pago simulado:</strong> No se realizará ningún cobro real. Ingresa cualquier dato de prueba.</span>
+        </div>
+
+        <!-- Botón de Pago -->
+        <button type="submit" class="btn btn-marvel w-100 py-3 rounded-pill mt-3" [disabled]="pagoForm.invalid">
+          🔒 Confirmar Pago
+        </button>
+      </form>
+    </div>
+
+  </div>
+
+  <!-- COMPRA COMPLETADA EXITOSAMENTE (PAGO EXITOSO) -->
+  <div *ngIf="pagoCompletado" class="row justify-content-center">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm p-5 text-center bg-white rounded-4">
+        
+        <!-- Círculo Checkbox Verde -->
+        <div class="d-flex justify-content-center mb-4">
+          <div class="d-flex align-items-center justify-content-center bg-success text-white rounded-3" style="width: 70px; height: 70px; font-size: 2.5rem; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);">
+            ✓
+          </div>
+        </div>
+
+        <h2 class="fw-bold mb-1 text-dark" style="font-family: 'Bangers', cursive; letter-spacing: 1px;">¡PAGO EXITOSO!</h2>
+        <p class="text-muted mb-2">Tu pedido ha sido procesado correctamente.</p>
+        <p class="fw-bold text-secondary mb-4" style="font-size: 0.95rem;">
+          Nº de pedido: <span class="text-danger">MCV-{{ 169160 + (pedidoGenerado?.id || 0) }}</span>
+        </p>
+
+        <!-- Detalle de pedido -->
+        <div class="card border-0 bg-light p-4 text-start mb-4 rounded-3" style="font-size: 0.9rem; border: 1px solid #eee !important;">
+          <div class="fw-bold mb-3 text-dark">Detalle del pedido:</div>
+          <div *ngFor="let item of pedidoGenerado?.productos" class="d-flex justify-content-between mb-2 text-muted">
+            <span>{{ item.producto.nombre }} × {{ item.cantidad }}</span>
+            <span>{{ (item.producto.precio * item.cantidad) | formatearPrecio }}</span>
+          </div>
+          
+          <div class="d-flex justify-content-between fw-bold border-top pt-2 mt-2 text-dark" style="font-size: 1.05rem;">
+            <span>Total pagado:</span>
+            <span class="text-danger" style="font-family: 'Bangers', cursive; font-size: 1.3rem;">
+              {{ pedidoGenerado?.total | formatearPrecio }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+          <a routerLink="/mis-pedidos" class="btn btn-marvel px-4 py-2 rounded-pill">Ver mis pedidos</a>
+          <a routerLink="/catalogo" class="btn btn-outline-danger px-4 py-2 rounded-pill" style="border-width: 2px; font-weight: bold;">
+            Seguir comprando
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>

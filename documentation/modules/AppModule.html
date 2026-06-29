@@ -1,0 +1,676 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>angular-temp documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">angular-temp documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content module">
+                   <div class="content-data">
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">Modules</li>
+    <li class="breadcrumb-item" >AppModule</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/app-module.ts</code>
+</div>
+
+<div class="text-center module-graph-container">
+    <div id="module-graph-svg">
+        <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.47.0 (20210316.0004)
+ -->
+<!-- Title: dependencies Pages: 1 -->
+<svg width="2071pt" height="284pt"
+ viewBox="0.00 0.00 2071.00 284.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 280)">
+<title>dependencies</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-280 2067,-280 2067,4 -4,4"/>
+<text text-anchor="start" x="1010.51" y="-42.4" font-family="Times-12" font-weight="bold" font-size="14.00">Legend</text>
+<polygon fill="#ffffb3" stroke="transparent" points="797.5,-10 797.5,-30 817.5,-30 817.5,-10 797.5,-10"/>
+<text text-anchor="start" x="821.13" y="-15.4" font-family="Times-12" font-size="14.00"> &#160;Declarations</text>
+<polygon fill="#8dd3c7" stroke="transparent" points="910.5,-10 910.5,-30 930.5,-30 930.5,-10 910.5,-10"/>
+<text text-anchor="start" x="934.23" y="-15.4" font-family="Times-12" font-size="14.00"> &#160;Module</text>
+<polygon fill="#80b1d3" stroke="transparent" points="996.5,-10 996.5,-30 1016.5,-30 1016.5,-10 996.5,-10"/>
+<text text-anchor="start" x="1020.28" y="-15.4" font-family="Times-12" font-size="14.00"> &#160;Bootstrap</text>
+<polygon fill="#fdb462" stroke="transparent" points="1093.5,-10 1093.5,-30 1113.5,-30 1113.5,-10 1093.5,-10"/>
+<text text-anchor="start" x="1117.17" y="-15.4" font-family="Times-12" font-size="14.00"> &#160;Providers</text>
+<polygon fill="#fb8072" stroke="transparent" points="1189.5,-10 1189.5,-30 1209.5,-30 1209.5,-10 1189.5,-10"/>
+<text text-anchor="start" x="1213.23" y="-15.4" font-family="Times-12" font-size="14.00"> &#160;Exports</text>
+<g id="clust1" class="cluster">
+<title>cluster_AppModule</title>
+<polygon fill="none" stroke="black" stroke-dasharray="1,5" points="8,-70 8,-268 2055,-268 2055,-70 8,-70"/>
+</g>
+<g id="clust2" class="cluster">
+<title>cluster_AppModule_declarations</title>
+<polygon fill="none" stroke="black" points="168,-78 168,-130 2047,-130 2047,-78 168,-78"/>
+</g>
+<g id="clust18" class="cluster">
+<title>cluster_AppModule_bootstrap</title>
+<polygon fill="none" stroke="black" points="1011,-208 1011,-260 1081,-260 1081,-208 1011,-208"/>
+</g>
+<g id="clust16" class="cluster">
+<title>cluster_AppModule_imports</title>
+<polygon fill="none" stroke="black" points="16,-78 16,-130 160,-130 160,-78 16,-78"/>
+</g>
+<!-- AdminDashboardComponent -->
+<g id="node1" class="node"><a xlink:href="../components/AdminDashboardComponent.html" href="../components/AdminDashboardComponent.html" target="_top">
+<title>AdminDashboardComponent</title>
+<polygon fill="#ffffb3" stroke="black" points="2039.36,-122 1858.64,-122 1858.64,-86 2039.36,-86 2039.36,-122"/>
+<text text-anchor="middle" x="1949" y="-99.8" font-family="Times,serif" font-size="14.00">AdminDashboardComponent</text>
+</a></g>
+<!-- AppModule -->
+<g id="node14" class="node"><a xlink:href="../modules/AppModule.html" href="../modules/AppModule.html" target="_top">
+<title>AppModule</title>
+<polygon fill="#8dd3c7" stroke="black" points="1087.66,-187 1084.66,-191 1063.66,-191 1060.66,-187 1004.34,-187 1004.34,-151 1087.66,-151 1087.66,-187"/>
+<text text-anchor="middle" x="1046" y="-164.8" font-family="Times,serif" font-size="14.00">AppModule</text>
+</a></g>
+<!-- AdminDashboardComponent&#45;&gt;AppModule -->
+<g id="edge1" class="edge">
+<title>AdminDashboardComponent&#45;&gt;AppModule</title>
+<path fill="none" stroke="black" d="M1949,-122.09C1949,-145.13 1949,-182 1949,-182 1949,-182 1097.74,-182 1097.74,-182"/>
+<polygon fill="black" stroke="black" points="1097.74,-178.5 1087.74,-182 1097.74,-185.5 1097.74,-178.5"/>
+</g>
+<!-- App -->
+<g id="node2" class="node"><a xlink:href="../components/App.html" href="../components/App.html" target="_top">
+<title>App</title>
+<polygon fill="#ffffb3" stroke="black" points="1841,-122 1787,-122 1787,-86 1841,-86 1841,-122"/>
+<text text-anchor="middle" x="1814" y="-99.8" font-family="Times,serif" font-size="14.00">App</text>
+</a></g>
+<!-- App&#45;&gt;AppModule -->
+<g id="edge2" class="edge">
+<title>App&#45;&gt;AppModule</title>
+<path fill="none" stroke="black" d="M1814,-122.04C1814,-143.66 1814,-177 1814,-177 1814,-177 1097.84,-177 1097.84,-177"/>
+<polygon fill="black" stroke="black" points="1097.84,-173.5 1087.84,-177 1097.84,-180.5 1097.84,-173.5"/>
+</g>
+<!-- CarritoComponent -->
+<g id="node3" class="node"><a xlink:href="../components/CarritoComponent.html" href="../components/CarritoComponent.html" target="_top">
+<title>CarritoComponent</title>
+<polygon fill="#ffffb3" stroke="black" points="1769.49,-122 1648.51,-122 1648.51,-86 1769.49,-86 1769.49,-122"/>
+<text text-anchor="middle" x="1709" y="-99.8" font-family="Times,serif" font-size="14.00">CarritoComponent</text>
+</a></g>
+<!-- CarritoComponent&#45;&gt;AppModule -->
+<g id="edge3" class="edge">
+<title>CarritoComponent&#45;&gt;AppModule</title>
+<path fill="none" stroke="black" d="M1709,-122.22C1709,-142.37 1709,-172 1709,-172 1709,-172 1097.72,-172 1097.72,-172"/>
+<polygon fill="black" stroke="black" points="1097.72,-168.5 1087.72,-172 1097.72,-175.5 1097.72,-168.5"/>
+</g>
+<!-- CatalogoComponent -->
+<g id="node4" class="node"><a xlink:href="../components/CatalogoComponent.html" href="../components/CatalogoComponent.html" target="_top">
+<title>CatalogoComponent</title>
+<polygon fill="#ffffb3" stroke="black" points="1630.88,-122 1499.12,-122 1499.12,-86 1630.88,-86 1630.88,-122"/>
+<text text-anchor="middle" x="1565" y="-99.8" font-family="Times,serif" font-size="14.00">CatalogoComponent</text>
+</a></g>
+<!-- CatalogoComponent&#45;&gt;AppModule -->
+<g id="edge4" class="edge">
+<title>CatalogoComponent&#45;&gt;AppModule</title>
+<path fill="none" stroke="black" d="M1565,-122.22C1565,-140.83 1565,-167 1565,-167 1565,-167 1098.03,-167 1098.03,-167"/>
+<polygon fill="black" stroke="black" points="1098.03,-163.5 1088.03,-167 1098.03,-170.5 1098.03,-163.5"/>
+</g>
+<!-- FormatearPrecioPipe -->
+<g id="node5" class="node">
+<title>FormatearPrecioPipe</title>
+<polygon fill="#ffffb3" stroke="black" points="1481.18,-122 1346.82,-122 1346.82,-86 1481.18,-86 1481.18,-122"/>
+<text text-anchor="middle" x="1414" y="-99.8" font-family="Times,serif" font-size="14.00">FormatearPrecioPipe</text>
+</g>
+<!-- FormatearPrecioPipe&#45;&gt;AppModule -->
+<g id="edge5" class="edge">
+<title>FormatearPrecioPipe&#45;&gt;AppModule</title>
+<path fill="none" stroke="black" d="M1414,-122.03C1414,-139.06 1414,-162 1414,-162 1414,-162 1097.86,-162 1097.86,-162"/>
+<polygon fill="black" stroke="black" points="1097.86,-158.5 1087.86,-162 1097.86,-165.5 1097.86,-158.5"/>
+</g>
+<!-- LoginComponent -->
+<g id="node6" class="node"><a xlink:href="../components/LoginComponent.html" href="../components/LoginComponent.html" target="_top">
+<title>LoginComponent</title>
+<polygon fill="#ffffb3" stroke="black" points="1329.28,-122 1214.72,-122 1214.72,-86 1329.28,-86 1329.28,-122"/>
+<text text-anchor="middle" x="1272" y="-99.8" font-family="Times,serif" font-size="14.00">LoginComponent</text>
+</a></g>
+<!-- LoginComponent&#45;&gt;AppModule -->
+<g id="edge6" class="edge">
+<title>LoginComponent&#45;&gt;AppModule</title>
+<path fill="none" stroke="black" d="M1272,-122.24C1272,-137.57 1272,-157 1272,-157 1272,-157 1097.72,-157 1097.72,-157"/>
+<polygon fill="black" stroke="black" points="1097.72,-153.5 1087.72,-157 1097.72,-160.5 1097.72,-153.5"/>
+</g>
+<!-- MisPedidosComponent -->
+<g id="node7" class="node"><a xlink:href="../components/MisPedidosComponent.html" href="../components/MisPedidosComponent.html" target="_top">
+<title>MisPedidosComponent</title>
+<polygon fill="#ffffb3" stroke="black" points="1196.95,-122 1049.05,-122 1049.05,-86 1196.95,-86 1196.95,-122"/>
+<text text-anchor="middle" x="1123" y="-99.8" font-family="Times,serif" font-size="14.00">MisPedidosComponent</text>
+</a></g>
+<!-- MisPedidosComponent&#45;&gt;AppModule -->
+<g id="edge7" class="edge">
+<title>MisPedidosComponent&#45;&gt;AppModule</title>
+<path fill="none" stroke="black" d="M1068.55,-122.11C1068.55,-122.11 1068.55,-140.99 1068.55,-140.99"/>
+<polygon fill="black" stroke="black" points="1065.05,-140.99 1068.55,-150.99 1072.05,-140.99 1065.05,-140.99"/>
+</g>
+<!-- NavbarComponent -->
+<g id="node8" class="node"><a xlink:href="../components/NavbarComponent.html" href="../components/NavbarComponent.html" target="_top">
+<title>NavbarComponent</title>
+<polygon fill="#ffffb3" stroke="black" points="1031.03,-122 908.97,-122 908.97,-86 1031.03,-86 1031.03,-122"/>
+<text text-anchor="middle" x="970" y="-99.8" font-family="Times,serif" font-size="14.00">NavbarComponent</text>
+</a></g>
+<!-- NavbarComponent&#45;&gt;AppModule -->
+<g id="edge8" class="edge">
+<title>NavbarComponent&#45;&gt;AppModule</title>
+<path fill="none" stroke="black" d="M1017.72,-122.11C1017.72,-122.11 1017.72,-140.99 1017.72,-140.99"/>
+<polygon fill="black" stroke="black" points="1014.22,-140.99 1017.72,-150.99 1021.22,-140.99 1014.22,-140.99"/>
+</g>
+<!-- PagoComponent -->
+<g id="node9" class="node"><a xlink:href="../components/PagoComponent.html" href="../components/PagoComponent.html" target="_top">
+<title>PagoComponent</title>
+<polygon fill="#ffffb3" stroke="black" points="890.83,-122 781.17,-122 781.17,-86 890.83,-86 890.83,-122"/>
+<text text-anchor="middle" x="836" y="-99.8" font-family="Times,serif" font-size="14.00">PagoComponent</text>
+</a></g>
+<!-- PagoComponent&#45;&gt;AppModule -->
+<g id="edge9" class="edge">
+<title>PagoComponent&#45;&gt;AppModule</title>
+<path fill="none" stroke="black" d="M836,-122.24C836,-137.57 836,-157 836,-157 836,-157 994.26,-157 994.26,-157"/>
+<polygon fill="black" stroke="black" points="994.26,-160.5 1004.26,-157 994.26,-153.5 994.26,-160.5"/>
+</g>
+<!-- PerfilComponent -->
+<g id="node10" class="node"><a xlink:href="../components/PerfilComponent.html" href="../components/PerfilComponent.html" target="_top">
+<title>PerfilComponent</title>
+<polygon fill="#ffffb3" stroke="black" points="763.43,-122 650.57,-122 650.57,-86 763.43,-86 763.43,-122"/>
+<text text-anchor="middle" x="707" y="-99.8" font-family="Times,serif" font-size="14.00">PerfilComponent</text>
+</a></g>
+<!-- PerfilComponent&#45;&gt;AppModule -->
+<g id="edge10" class="edge">
+<title>PerfilComponent&#45;&gt;AppModule</title>
+<path fill="none" stroke="black" d="M707,-122.03C707,-139.06 707,-162 707,-162 707,-162 994.09,-162 994.09,-162"/>
+<polygon fill="black" stroke="black" points="994.09,-165.5 1004.09,-162 994.09,-158.5 994.09,-165.5"/>
+</g>
+<!-- ProductCrudComponent -->
+<g id="node11" class="node"><a xlink:href="../components/ProductCrudComponent.html" href="../components/ProductCrudComponent.html" target="_top">
+<title>ProductCrudComponent</title>
+<polygon fill="#ffffb3" stroke="black" points="632.38,-122 479.62,-122 479.62,-86 632.38,-86 632.38,-122"/>
+<text text-anchor="middle" x="556" y="-99.8" font-family="Times,serif" font-size="14.00">ProductCrudComponent</text>
+</a></g>
+<!-- ProductCrudComponent&#45;&gt;AppModule -->
+<g id="edge11" class="edge">
+<title>ProductCrudComponent&#45;&gt;AppModule</title>
+<path fill="none" stroke="black" d="M556,-122.22C556,-140.83 556,-167 556,-167 556,-167 994.22,-167 994.22,-167"/>
+<polygon fill="black" stroke="black" points="994.22,-170.5 1004.22,-167 994.22,-163.5 994.22,-170.5"/>
+</g>
+<!-- RecuperarComponent -->
+<g id="node12" class="node"><a xlink:href="../components/RecuperarComponent.html" href="../components/RecuperarComponent.html" target="_top">
+<title>RecuperarComponent</title>
+<polygon fill="#ffffb3" stroke="black" points="461.35,-122 322.65,-122 322.65,-86 461.35,-86 461.35,-122"/>
+<text text-anchor="middle" x="392" y="-99.8" font-family="Times,serif" font-size="14.00">RecuperarComponent</text>
+</a></g>
+<!-- RecuperarComponent&#45;&gt;AppModule -->
+<g id="edge12" class="edge">
+<title>RecuperarComponent&#45;&gt;AppModule</title>
+<path fill="none" stroke="black" d="M392,-122.22C392,-142.37 392,-172 392,-172 392,-172 994.09,-172 994.09,-172"/>
+<polygon fill="black" stroke="black" points="994.09,-175.5 1004.09,-172 994.09,-168.5 994.09,-175.5"/>
+</g>
+<!-- RegistroComponent -->
+<g id="node13" class="node"><a xlink:href="../components/RegistroComponent.html" href="../components/RegistroComponent.html" target="_top">
+<title>RegistroComponent</title>
+<polygon fill="#ffffb3" stroke="black" points="304.27,-122 175.73,-122 175.73,-86 304.27,-86 304.27,-122"/>
+<text text-anchor="middle" x="240" y="-99.8" font-family="Times,serif" font-size="14.00">RegistroComponent</text>
+</a></g>
+<!-- RegistroComponent&#45;&gt;AppModule -->
+<g id="edge13" class="edge">
+<title>RegistroComponent&#45;&gt;AppModule</title>
+<path fill="none" stroke="black" d="M240,-122.04C240,-143.66 240,-177 240,-177 240,-177 994.08,-177 994.08,-177"/>
+<polygon fill="black" stroke="black" points="994.08,-180.5 1004.08,-177 994.08,-173.5 994.08,-180.5"/>
+</g>
+<!-- App  -->
+<g id="node16" class="node"><a xlink:href="../components/App.html" href="../components/App.html" target="_top">
+<title>App </title>
+<polygon fill="#80b1d3" stroke="black" points="1073,-252 1019,-252 1019,-216 1073,-216 1073,-252"/>
+<text text-anchor="middle" x="1046" y="-229.8" font-family="Times,serif" font-size="14.00">App </text>
+</a></g>
+<!-- AppModule&#45;&gt;App  -->
+<g id="edge15" class="edge">
+<title>AppModule&#45;&gt;App </title>
+<path fill="none" stroke="black" stroke-dasharray="1,5" d="M1046,-187.11C1046,-187.11 1046,-205.99 1046,-205.99"/>
+<polygon fill="black" stroke="black" points="1042.5,-205.99 1046,-215.99 1049.5,-205.99 1042.5,-205.99"/>
+</g>
+<!-- AppRoutingModule -->
+<g id="node15" class="node"><a xlink:href="../modules/AppRoutingModule.html" href="../modules/AppRoutingModule.html" target="_top">
+<title>AppRoutingModule</title>
+<polygon fill="#8dd3c7" stroke="black" points="152.27,-122 149.27,-126 128.27,-126 125.27,-122 23.73,-122 23.73,-86 152.27,-86 152.27,-122"/>
+<text text-anchor="middle" x="88" y="-99.8" font-family="Times,serif" font-size="14.00">AppRoutingModule</text>
+</a></g>
+<!-- AppRoutingModule&#45;&gt;AppModule -->
+<g id="edge14" class="edge">
+<title>AppRoutingModule&#45;&gt;AppModule</title>
+<path fill="none" stroke="black" d="M88,-122.09C88,-145.13 88,-182 88,-182 88,-182 994.22,-182 994.22,-182"/>
+<polygon fill="black" stroke="black" points="994.22,-185.5 1004.22,-182 994.22,-178.5 994.22,-185.5"/>
+</g>
+</g>
+</svg>
+
+    </div>
+    <i id="fullscreen" class="icon ion-ios-resize module-graph-fullscreen-btn" aria-hidden="true"></i>
+    <div class="btn-group size-buttons">
+        <button id="zoom-in" class="btn btn-default btn-sm">Zoom in</button>
+        <button id="reset" class="btn btn-default btn-sm">Reset</button>
+        <button id="zoom-out" class="btn btn-default btn-sm">Zoom out</button>
+    </div>
+</div>
+<script src="../js/libs/svg-pan-zoom.min.js"></script>
+<script src="../js/svg-pan-zoom.controls.js"></script>
+
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+        <a href="#info" 
+            class="nav-link"
+            class="nav-link active"
+            role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+    </li>
+    <li class="nav-item">
+        <a href="#source" 
+            class="nav-link"
+            
+            role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+
+
+
+        <div class="container-fluid module">
+            <div class="row">
+                <div class="col-sm-3">
+                    <h3>Declarations<a href="https://angular.io/api/core/NgModule#declarations" target="_blank" rel="noopener noreferrer"
+                            title="Official documentation about module declarations"><span class="icon ion-ios-information-circle-outline"></span></a></h3>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a href="../components/AdminDashboardComponent.html">AdminDashboardComponent</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="../components/App.html">App</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="../components/CarritoComponent.html">CarritoComponent</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="../components/CatalogoComponent.html">CatalogoComponent</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="../pipes/FormatearPrecioPipe.html">FormatearPrecioPipe</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="../components/LoginComponent.html">LoginComponent</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="../components/MisPedidosComponent.html">MisPedidosComponent</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="../components/NavbarComponent.html">NavbarComponent</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="../components/PagoComponent.html">PagoComponent</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="../components/PerfilComponent.html">PerfilComponent</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="../components/ProductCrudComponent.html">ProductCrudComponent</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="../components/RecuperarComponent.html">RecuperarComponent</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="../components/RegistroComponent.html">RegistroComponent</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-3">
+                    <h3>Imports<a href="https://angular.io/api/core/NgModule#imports" target="_blank" rel="noopener noreferrer"
+                            title="Official documentation about module imports"><span
+                                class="icon ion-ios-information-circle-outline"></a></h3>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a href="../modules/AppRoutingModule.html">AppRoutingModule</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-3">
+                    <h3>Bootstrap<a href="https://angular.io/api/core/NgModule#bootstrap" target="_blank" rel="noopener noreferrer"
+                            title="Official documentation about module bootstrap"><span class="icon ion-ios-information-circle-outline"></a></h3>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a href="../s/App.html">App</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+                <section data-compodoc="block-relationships">
+            <h3>Relationships</h3>
+
+            <div class="row pt-3">
+                <div class="col-sm-6">
+                    <h4>Used by</h4>
+                        <p class="comment"><i>No results matching.</i></p>
+                </div>
+
+                <div class="col-sm-6">
+                    <h4>Depends on</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="../modules/AppRoutingModule.html" target="_self" >AppRoutingModule</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/AdminDashboardComponent.html" target="_self" >AdminDashboardComponent</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/App.html" target="_self" >App</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/CarritoComponent.html" target="_self" >CarritoComponent</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/CatalogoComponent.html" target="_self" >CatalogoComponent</a></code>
+                                </li>
+                                <li>
+                                        <code>FormatearPrecioPipe</code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/LoginComponent.html" target="_self" >LoginComponent</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/MisPedidosComponent.html" target="_self" >MisPedidosComponent</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/NavbarComponent.html" target="_self" >NavbarComponent</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/PagoComponent.html" target="_self" >PagoComponent</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/PerfilComponent.html" target="_self" >PerfilComponent</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/ProductCrudComponent.html" target="_self" >ProductCrudComponent</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/RecuperarComponent.html" target="_self" >RecuperarComponent</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/RegistroComponent.html" target="_self" >RegistroComponent</a></code>
+                                </li>
+                        </ul>
+                </div>
+            </div>
+        </section>
+
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { NgModule, provideBrowserGlobalErrorListeners } from &#x27;@angular/core&#x27;;
+import { BrowserModule } from &#x27;@angular/platform-browser&#x27;;
+import { FormsModule, ReactiveFormsModule } from &#x27;@angular/forms&#x27;;
+
+import { AppRoutingModule } from &#x27;./app-routing-module&#x27;;
+import { App } from &#x27;./app&#x27;;
+
+// Componentes
+import { NavbarComponent } from &#x27;./components/navbar/navbar&#x27;;
+import { LoginComponent } from &#x27;./components/login/login&#x27;;
+import { RegistroComponent } from &#x27;./components/registro/registro&#x27;;
+import { RecuperarComponent } from &#x27;./components/recuperar/recuperar&#x27;;
+import { PerfilComponent } from &#x27;./components/perfil/perfil&#x27;;
+import { CatalogoComponent } from &#x27;./components/catalogo/catalogo&#x27;;
+import { CarritoComponent } from &#x27;./components/carrito/carrito&#x27;;
+import { PagoComponent } from &#x27;./components/pago/pago&#x27;;
+import { MisPedidosComponent } from &#x27;./components/mis-pedidos/mis-pedidos&#x27;;
+import { AdminDashboardComponent } from &#x27;./components/admin-dashboard/admin-dashboard&#x27;;
+import { ProductCrudComponent } from &#x27;./components/product-crud/product-crud&#x27;;
+
+// Pipes
+import { FormatearPrecioPipe } from &#x27;./pipes/formatear-precio.pipe&#x27;;
+
+@NgModule({
+  declarations: [
+    App,
+    NavbarComponent,
+    LoginComponent,
+    RegistroComponent,
+    RecuperarComponent,
+    PerfilComponent,
+    CatalogoComponent,
+    CarritoComponent,
+    PagoComponent,
+    MisPedidosComponent,
+    AdminDashboardComponent,
+    ProductCrudComponent,
+    FormatearPrecioPipe
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
+    AppRoutingModule
+  ],
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+  ],
+  bootstrap: [App]
+})
+export class AppModule { }
+</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'module';
+            var COMPODOC_CURRENT_PAGE_URL = 'AppModule.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

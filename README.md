@@ -39,11 +39,14 @@ Este es un proyecto de aplicación web sobre una tienda en línea de figuras de 
 <img width="731" height="890" alt="Snag_9fa245" src="https://github.com/user-attachments/assets/143e574b-0a87-4f74-bcc0-773fd103f9d6" />
 <img width="662" height="828" alt="Snag_9fb10a" src="https://github.com/user-attachments/assets/0a0d4419-2a11-466d-9d2b-884abf37d229" />
 
+---
 
+## ⚡ Novedades de la Fase 2: Migración a Angular
 
+En esta segunda fase, la aplicación se ha migrado completamente de una arquitectura estática a un **Framework Moderno (Angular v18+)** para lograr un desarrollo escalable, robusto y profesional:
 
-
-
-
-
-
+*   **Estructura basada en Componentes:** Organización de la app en componentes desacoplados y enrutamiento dinámico (`AppRoutingModule`).
+*   **Formularios Reactivos Avanzados:** Implementación de `ReactiveFormsModule` para login, registro y pasarela de pago con validaciones en tiempo real (reglas de contraseñas y formatos de tarjetas).
+*   **Servicios y Reactividad:** Gestión centralizada de estados y comunicación reactiva con RxJS (`BehaviorSubject`) entre componentes hermanos.
+*   **Pruebas Unitarias Automatizadas:** Integración de pruebas unitarias de lógica de negocio y flujos críticos utilizando **Vitest**.
+*   **Documentación del Código:** Generación del portal interactivo de documentación de arquitectura del software a través de **Compodoc**.

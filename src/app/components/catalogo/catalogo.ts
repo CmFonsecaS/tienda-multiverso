@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
 import { Producto } from '../../interfaces/producto';
@@ -22,7 +22,8 @@ export class CatalogoComponent implements OnInit {
 
   constructor(
     private productService: ProductService,
-    private cartService: CartService
+    private cartService: CartService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -30,8 +31,13 @@ export class CatalogoComponent implements OnInit {
   }
 
   cargarProductos(): void {
-    this.productos = this.productService.getProductos();
-    this.aplicarFiltros();
+    this.productService.getProductos().subscribe({
+      next: (prods) => {
+        this.productos = prods;
+        this.aplicarFiltros();
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   seleccionarCategoria(cat: string): void {

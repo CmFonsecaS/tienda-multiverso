@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductService } from '../../services/product.service';
 import { ToastService } from '../../services/toast.service';
@@ -38,7 +38,8 @@ export class ProductCrudComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private productService: ProductService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -47,7 +48,12 @@ export class ProductCrudComponent implements OnInit {
   }
 
   cargarProductos(): void {
-    this.productos = this.productService.getProductos();
+    this.productService.getProductos().subscribe({
+      next: (prods) => {
+        this.productos = prods;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   initForm(): void {
@@ -107,23 +113,36 @@ export class ProductCrudComponent implements OnInit {
         id: this.productoEdicionId,
         ...datosForm
       };
-      this.productService.actualizarProducto(productoActualizado);
-      this.toastService.mostrarToast('Producto actualizado exitosamente 🦸', 'success');
+      this.productService.actualizarProducto(productoActualizado).subscribe({
+        next: () => {
+          this.toastService.mostrarToast('Producto actualizado exitosamente 🦸', 'success');
+          this.cargarProductos();
+          this.cerrarModal();
+          this.cdr.detectChanges();
+        }
+      });
     } else {
       // Crear
-      this.productService.agregarProducto(datosForm);
-      this.toastService.mostrarToast('Producto creado exitosamente 🦸', 'success');
+      this.productService.agregarProducto(datosForm).subscribe({
+        next: () => {
+          this.toastService.mostrarToast('Producto creado exitosamente 🦸', 'success');
+          this.cargarProductos();
+          this.cerrarModal();
+          this.cdr.detectChanges();
+        }
+      });
     }
-
-    this.cargarProductos();
-    this.cerrarModal();
   }
 
   eliminar(pId: number): void {
     if (confirm('¿Estás seguro de que deseas eliminar esta figura de colección de la tienda?')) {
-      this.productService.eliminarProducto(pId);
-      this.toastService.mostrarToast('Producto eliminado exitosamente 🗑️', 'danger');
-      this.cargarProductos();
+      this.productService.eliminarProducto(pId).subscribe({
+        next: () => {
+          this.toastService.mostrarToast('Producto eliminado exitosamente 🗑️', 'danger');
+          this.cargarProductos();
+          this.cdr.detectChanges();
+        }
+      });
     }
   }
 }

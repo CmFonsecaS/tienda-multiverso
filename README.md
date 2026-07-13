@@ -1,52 +1,74 @@
 # TIENDA MULTIVERSO 🌌
 
-Este es un proyecto de aplicación web sobre una tienda en línea de figuras de colección del Universo de Marvel.
+Este es un proyecto de aplicación web sobre una tienda en línea de figuras de colección del Universo de Marvel, migrado completamente a una arquitectura basada en microservicios contenerizados y consumo de API REST.
+
 ---
 
 ## 🚀 Características Principales
 
 ### 👥 Perfil de Cliente
 *   **Autenticación segura:** Inicio de sesión, recuperación de contraseña simulada y registro de usuarios con validación interactiva de 5 reglas de seguridad en tiempo real para contraseñas.
-*   **Catálogo interactivo:** Búsqueda por texto, filtrado por categorías y ordenación por precio o nombre al vuelo.
-*   **Carrito de compras reactivo:** Panel lateral deslizante (Offcanvas) sincronizado al instante y vista detallada del carrito con edición de cantidades y cálculo de subtotales.
-*   **Pasarela de pago simulada:** Validación de formato de tarjetas de crédito y simulación del procesamiento de compra.
+*   **Catálogo interactivo REST:** Búsqueda por texto, filtrado por categorías y ordenación por precio o nombre consumiendo datos en tiempo real mediante observables asíncronos.
+*   **Carrito de compras reactivo:** Panel lateral deslizante (Offcanvas) sincronizado al instante y vista detallada del carrito con edición de cantidades, cálculo de subtotales y validación de stock disponible contra el servidor.
+*   **Pasarela de pago asíncrona:** Procesamiento de compra interactivo que realiza la actualización de stock en caliente en la base de datos REST mediante peticiones HTTP asíncronas.
 *   **Historial de Pedidos:** Sección de "Mis Pedidos" para revisar las compras realizadas y sus datos de envío.
 
 ### 👑 Perfil de Administrador
-*   **Dashboard de Métricas:** Visualización de ingresos totales facturados, alertas de bajo stock crítico (≤ 3 unidades) y top de productos más vendidos.
-*   **Control de Inventario:** Modificación rápida de stock con botones de incremento/decremento y guardado instantáneo.
-*   **Mantenimiento (CRUD):** Gestión completa de la base de datos de productos (crear, editar, eliminar) y usuarios.
+*   **Dashboard de Métricas:** Visualización en tiempo real de ingresos totales facturados, alertas de bajo stock crítico (≤ 3 unidades) y top de productos más vendidos.
+*   **Control de Inventario:** Modificación rápida de stock con botones de incremento/decremento y guardado instantáneo sincronizado con el servidor.
+*   **Mantenimiento (CRUD completo):** Creación de nuevos productos con generación de IDs secuenciales numéricos en el cliente, modificación de atributos y eliminación con retroalimentación Toast flotante inmediata.
 
 ---
 
 ## 🛠️ Tecnologías Utilizadas
 
-*   **Estructura:** HTML5.
-*   **Diseño y Responsividad:** CSS3 personalizado integrado con **Bootstrap 5.3.3** así se garantiza un diseño adaptativo en móviles, tablets y PCs.
-*   **Lógica de negocio:** JavaScript.
-*   **Persistencia de datos:**
-    *   `localStorage`: Para usuarios registrados, catálogo de productos e historial de pedidos.
-    *   `sessionStorage`: Para la sesión del usuario activo y el estado temporal del carrito de compras.
+*   **Frontend Framework:** Angular v18+ (enrutamiento, formularios reactivos y servicios centralizados).
+*   **Consumo de API:** `HttpClient` de Angular con flujos asíncronos basados en observables de RxJS.
+*   **Backend REST (Simulado):** `json-server` (versión estable 0.17.4) para una persistencia e incremento numérico robustos en archivos de base de datos JSON.
+*   **Servidor Web y Proxy Inverso:** Nginx (actuando como servidor estático en puerto 8080 y proxy inverso redirigiendo las llamadas `/tienda-multiverso-json-server/` al backend).
+*   **Contenerización y Orquestación:** Docker y Docker Compose (aislamiento y comunicación segura entre el servicio frontend y el backend API).
+*   **Estilos y Responsividad:** CSS3 personalizado integrado con **Bootstrap 5.3.3** para garantizar diseño adaptativo en móviles, tablets y PCs.
+*   **Pruebas Unitarias Automatizadas:** Pruebas unitarias de lógica de negocio y flujos críticos utilizando **Vitest**.
+*   **Documentación del Código:** Portal interactivo de documentación de arquitectura del software a través de **Compodoc**.
 
 ---
 
-## 🛠️ Galería
+## 🐳 Arquitectura de Contenedores y Despliegue
 
-<img width="545" height="723" alt="Snag_9f844d" src="https://github.com/user-attachments/assets/c98b271d-a1fb-426d-9e58-577b572faf5b" />
-<img width="1912" height="907" alt="Snag_9f8d08" src="https://github.com/user-attachments/assets/bd77ed72-01f1-41c7-ad1b-ebca57046056" />
-<img width="1369" height="917" alt="Snag_9f9526" src="https://github.com/user-attachments/assets/b226cb57-2e9b-4e8a-bc0f-71a61a017513" />
-<img width="742" height="855" alt="Snag_9f9b7f" src="https://github.com/user-attachments/assets/8d020711-b068-4453-85d8-7e2ee17d8002" />
-<img width="731" height="890" alt="Snag_9fa245" src="https://github.com/user-attachments/assets/143e574b-0a87-4f74-bcc0-773fd103f9d6" />
-<img width="662" height="828" alt="Snag_9fb10a" src="https://github.com/user-attachments/assets/0a0d4419-2a11-466d-9d2b-884abf37d229" />
+El proyecto se encuentra orquestado y contenerizado de la siguiente manera:
+
+*   **Servicio Frontend (`frontend_app`):** Corre en el puerto `8080` (interno `80`). Utiliza una compilación multi-stage de Node para generar el bundle de Angular y servirlo de forma estática con Nginx.
+*   **Servicio Backend (`backend_api`):** Corre en el puerto `3000`. Utiliza `json-server` para levantar la API REST de persistencia.
+*   **Volumen de Persistencia Sincronizado:** El contenedor backend comparte y sincroniza en tiempo real el archivo `db.json` con tu computadora. Cualquier cambio de stock, compra del cliente o creación/edición del administrador se guarda físicamente en tu host al instante sin bloqueos de archivo.
+
+### ⚡ Cómo Ejecutar el Proyecto Localmente
+
+Para levantar y compilar el entorno completo de forma limpia, sigue estos comandos en tu terminal (con Docker Desktop ejecutándose de fondo):
+
+1.  **Limpiar contenedores y redes previas:**
+    ```bash
+    docker compose down
+    ```
+2.  **Compilar imágenes de Docker sin utilizar caché (Garantiza código nuevo):**
+    ```bash
+    docker compose build --no-cache
+    ```
+3.  **Levantar los contenedores en segundo plano (Detached):**
+    ```bash
+    docker compose up -d
+    ```
+4.  **Acceder a la aplicación:**
+    *   👉 **Aplicación Frontend:** [http://localhost:8080](http://localhost:8080)
+    *   👉 **Catálogo Directo (Enrutamiento Angular):** [http://localhost:8080/tienda-multiverso](http://localhost:8080/tienda-multiverso)
+    *   👉 **API REST (Reverse Proxy Nginx):** [http://localhost:8080/tienda-multiverso-json-server/productos](http://localhost:8080/tienda-multiverso-json-server/productos)
 
 ---
 
-## ⚡ Novedades de la Fase 2: Migración a Angular
+## 🧪 Pruebas Unitarias y Calidad
 
-En esta segunda fase, la aplicación se ha migrado completamente de una arquitectura estática a un **Framework Moderno (Angular v18+)** para lograr un desarrollo escalable, robusto y profesional:
+Para validar el correcto funcionamiento de los servicios mockeados y flujos de negocio sin depender de la base de datos REST física, ejecuta en tu terminal local:
+```bash
+npm run test
+```
+*(Todos los casos de prueba de Vitest están integrados y validados en verde).*
 
-*   **Estructura basada en Componentes:** Organización de la app en componentes desacoplados y enrutamiento dinámico (`AppRoutingModule`).
-*   **Formularios Reactivos Avanzados:** Implementación de `ReactiveFormsModule` para login, registro y pasarela de pago con validaciones en tiempo real (reglas de contraseñas y formatos de tarjetas).
-*   **Servicios y Reactividad:** Gestión centralizada de estados y comunicación reactiva con RxJS (`BehaviorSubject`) entre componentes hermanos.
-*   **Pruebas Unitarias Automatizadas:** Integración de pruebas unitarias de lógica de negocio y flujos críticos utilizando **Vitest**.
-*   **Documentación del Código:** Generación del portal interactivo de documentación de arquitectura del software a través de **Compodoc**.

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CartService } from '../../services/cart.service';
 import { AuthService } from '../../services/auth.service';
 import { ProductService } from '../../services/product.service';
@@ -23,14 +23,19 @@ export class AdminDashboardComponent implements OnInit {
   constructor(
     private cartService: CartService,
     private authService: AuthService,
-    private productService: ProductService
+    private productService: ProductService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.pedidos = this.cartService.getPedidos();
-    this.productos = this.productService.getProductos();
-    
-    this.calcularMetricas();
+    this.productService.getProductos().subscribe({
+      next: (prods) => {
+        this.productos = prods;
+        this.calcularMetricas();
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   calcularMetricas(): void {

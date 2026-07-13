@@ -25,6 +25,7 @@ const routes: Routes = [
   // Rutas de Cliente Protegidas
   { path: 'perfil', component: PerfilComponent, canActivate: [AuthGuard] },
   { path: 'catalogo', component: CatalogoComponent, canActivate: [AuthGuard] },
+  { path: 'tienda-multiverso', component: CatalogoComponent, canActivate: [AuthGuard] },
   { path: 'carrito', component: CarritoComponent, canActivate: [AuthGuard] },
   { path: 'pago', component: PagoComponent, canActivate: [AuthGuard] },
   { path: 'mis-pedidos', component: MisPedidosComponent, canActivate: [AuthGuard] },

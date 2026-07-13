@@ -24,6 +24,7 @@ export class CartService {
   private readonly STORAGE_ORDERS_KEY = 'marvel_pedidos';
 
   private cartSubject = new BehaviorSubject<ItemCarritoSimple[]>([]);
+  private productos: Producto[] = [];
   
   /**
    * Observable que emite la lista simplificada de items agregados en el carrito actual.
@@ -35,6 +36,20 @@ export class CartService {
     private toastService: ToastService
   ) {
     this.cargarCarrito();
+    this.cargarProductos();
+  }
+
+  /**
+   * Carga la lista de productos desde el API asíncronamente para sincronizar el carrito.
+   */
+  cargarProductos(): void {
+    this.productService.getProductos().subscribe({
+      next: (prods) => {
+        this.productos = prods;
+        // Forzar emisión del carro para refrescar vistas con las figuras actualizadas
+        this.cartSubject.next(this.getCarritoItems());
+      }
+    });
   }
 
   /**
@@ -69,10 +84,9 @@ export class CartService {
    */
   getCarritoDetallado(): { producto: Producto; cantidad: number }[] {
     const items = this.getCarritoItems();
-    const productos = this.productService.getProductos();
     return items
       .map(item => {
-        const prod = productos.find(p => p.id === item.id);
+        const prod = this.productos.find(p => p.id === item.id);
         return prod ? { producto: prod, cantidad: item.cantidad } : null;
       })
       .filter((item): item is { producto: Producto; cantidad: number } => item !== null);
@@ -100,8 +114,7 @@ export class CartService {
    * @param productoId Identificador de la figura de colección.
    */
   agregarAlCarrito(productoId: number): void {
-    const productos = this.productService.getProductos();
-    const producto = productos.find(p => p.id === productoId);
+    const producto = this.productos.find(p => p.id === productoId);
     if (!producto) return;
 
     if (producto.stock <= 0) {
@@ -142,8 +155,7 @@ export class CartService {
    * @param productoId Identificador de la figura de acción.
    */
   incrementarCantidad(productoId: number): void {
-    const productos = this.productService.getProductos();
-    const producto = productos.find(p => p.id === productoId);
+    const producto = this.productos.find(p => p.id === productoId);
     if (!producto) return;
 
     const items = [...this.getCarritoItems()];
@@ -200,7 +212,7 @@ export class CartService {
   }
 
   /**
-   * Registra una compra como un nuevo pedido y actualiza el stock físico de las figuras.
+   * Registra una compra como un nuevo pedido y actualiza el stock físico de las figuras en el API.
    * @param usuarioId ID del comprador.
    * @param usuarioNombre Nombre completo del cliente.
    * @returns El objeto de tipo Pedido generado exitosamente, o null si el carro estaba vacío.
@@ -209,8 +221,13 @@ export class CartService {
     const detalle = this.getCarritoDetallado();
     if (detalle.length === 0) return null;
 
+    // Descontar stock asíncronamente en el API REST
     detalle.forEach(item => {
-      this.productService.actualizarStock(item.producto.id, item.cantidad);
+      this.productService.actualizarStock(item.producto.id, item.cantidad).subscribe({
+        next: () => {
+          this.cargarProductos(); // Refrescar stock de la figura
+        }
+      });
     });
 
     const pedidos = this.getPedidos();

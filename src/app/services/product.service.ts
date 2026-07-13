@@ -1,208 +1,116 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { switchMap, map } from 'rxjs/operators';
 import { Producto } from '../interfaces/producto';
 
 /**
  * @description
  * Servicio encargado de gestionar los productos (figuras de colección) en la tienda.
- * Maneja la persistencia del inventario en localStorage, realiza el descuento de stock
- * en compras y provee las operaciones CRUD para la vista de administrador.
+ * Realiza el consumo asíncrono de la API REST mediante HttpClient para todas las operaciones CRUD.
  */
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  private readonly STORAGE_PRODUCTS_KEY = 'marvel_productos';
+  constructor(private http: HttpClient) {}
 
-  private readonly PRODUCTOS_INICIALES: Producto[] = [
-    {
-      id: 1,
-      nombre: "Iron Man (Model 09)",
-      serie: "Marvel Comics",
-      precio: 12990,
-      stock: 8,
-      descripcion: "Figura articulada de Iron Man Modelo 09. Incluye accesorios de efectos de energía y manos intercambiables. Edad recomendada: 4+.",
-      imagen: "img/Iron Man 09.jpg",
-      categoria: "Iron Man"
-    },
-    {
-      id: 2,
-      nombre: "The Incredible Hulk",
-      serie: "Marvel 80 Years",
-      precio: 14990,
-      stock: 5,
-      descripcion: "Hulk edición 80 Aniversario Marvel. Incluye tubería aplastada como accesorio. Figura diseño clásico.",
-      imagen: "img/Increible Hulk.jpg",
-      categoria: "Hulk"
-    },
-    {
-      id: 3,
-      nombre: "Juggernaut",
-      serie: "Marvel Legends GamerVerse",
-      precio: 24990,
-      stock: 3,
-      descripcion: "Figura premium de Juggernaut de la línea GamerVerse. Incluye 2 manos extra intercambiables. Figura de Marvel vs Capcom.",
-      imagen: "img/Juggernaut.jpg",
-      categoria: "X-Men"
-    },
-    {
-      id: 4,
-      nombre: "Cyclops",
-      serie: "X-Men '97",
-      precio: 13990,
-      stock: 7,
-      descripcion: "Cyclops de la serie animada X-Men '97. Incluye cabeza alternativa, manos y efecto de rayos ópticos.",
-      imagen: "img/Cyclops.jpg",
-      categoria: "X-Men"
-    },
-    {
-      id: 5,
-      nombre: "Magneto",
-      serie: "X-Men '97",
-      precio: 13990,
-      stock: 6,
-      descripcion: "Magneto de la serie animada X-Men '97. Incluye manos extra. Figura diseño clásico.",
-      imagen: "img/Magneto.jpg",
-      categoria: "X-Men"
-    },
-    {
-      id: 6,
-      nombre: "Deadpool (con Dogpool)",
-      serie: "Marvel Legends - Deadpool & Wolverine",
-      precio: 32990,
-      stock: 4,
-      descripcion: "Deadpool premium con figura de Dogpool incluida. Múltiples accesorios: espadas, manos, calavera. Para mayores de 14 años.",
-      imagen: "img/Deadpool.jpg",
-      categoria: "Deadpool"
-    },
-    {
-      id: 7,
-      nombre: "Wolverine (Brown Suit)",
-      serie: "Marvel Legends - Deadpool & Wolverine",
-      precio: 19990,
-      stock: 9,
-      descripcion: "Wolverine con traje clásico. Incluye cabeza con y sin máscara.",
-      imagen: "img/Wolverine (Brown suit).jpg",
-      categoria: "X-Men"
-    },
-    {
-      id: 8,
-      nombre: "Venom",
-      serie: "Marvel Legends GamerVerse - Spider-Man 2",
-      precio: 27990,
-      stock: 2,
-      descripcion: "Venom del videojuego Spider-Man 2. Figura con tentáculos de simbiontes and más accesorios.",
-      imagen: "img/Venom.jpg",
-      categoria: "Spider-Man"
-    },
-    {
-      id: 9,
-      nombre: "Scarlet Spider",
-      serie: "Marvel Comics - Spider-Man",
-      precio: 11990,
-      stock: 10,
-      descripcion: "Scarlet Spider (Clon de Spider-Man). Figura de Spider-Man de la serie animada de los 90s.",
-      imagen: "img/Scarlet Spider.jpg",
-      categoria: "Spider-Man"
-    },
-    {
-      id: 10,
-      nombre: "Dr. Doom",
-      serie: "Marvel Legends Super Villains",
-      precio: 15990,
-      stock: 5,
-      descripcion: "Dr. Doom línea Super Villains. Build-A-Figure Xemnu. Incluye manos adicionales y cráneo con columna vertebral.",
-      imagen: "img/Dr. Doom.jpg",
-      categoria: "Villanos"
-    }
-  ];
-
-  constructor() {
-    this.inicializarProductos();
+  /**
+   * Resuelve dinámicamente la URL base del API.
+   * Si es desarrollo local corre en el puerto 3000, si es Docker corre por el proxy de Nginx.
+   */
+  private getApiUrl(): string {
+    return window.location.origin.includes('localhost:4200')
+      ? 'http://localhost:3000'
+      : '/tienda-multiverso-json-server';
   }
 
   /**
-   * Inicializa la base de datos de productos en localStorage con las figuras por defecto
-   * si no existe ninguna previa o si contiene datos antiguos incompatibles.
+   * Obtiene la lista completa de figuras de colección.
+   * @returns Un Observable con la lista de productos.
    */
-  private inicializarProductos(): void {
-    const data = localStorage.getItem(this.STORAGE_PRODUCTS_KEY);
-    if (!data || data.includes('.png') || data.includes('img/ironman.png')) {
-      localStorage.setItem(this.STORAGE_PRODUCTS_KEY, JSON.stringify(this.PRODUCTOS_INICIALES));
-    }
+  getProductos(): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.getApiUrl()}/productos`).pipe(
+      map(productos => productos.map(p => ({
+        ...p,
+        id: isNaN(Number(p.id)) ? p.id : Number(p.id)
+      })))
+    );
   }
 
   /**
-   * Obtiene la lista completa de figuras registradas en la tienda.
-   * @returns Un arreglo con todos los objetos Producto.
+   * Obtiene un producto individual por su ID.
+   * @param id Identificador numérico de la figura.
    */
-  getProductos(): Producto[] {
-    const data = localStorage.getItem(this.STORAGE_PRODUCTS_KEY);
-    return data ? JSON.parse(data) : this.PRODUCTOS_INICIALES;
+  getProductById(id: number | string): Observable<Producto> {
+    return this.http.get<Producto>(`${this.getApiUrl()}/productos/${id}`).pipe(
+      map(p => ({
+        ...p,
+        id: isNaN(Number(p.id)) ? p.id : Number(p.id)
+      }))
+    );
   }
 
   /**
-   * Sobrescribe y guarda la lista de productos en el almacenamiento local.
-   * @param productos Lista completa de productos a persistir.
+   * Agrega un nuevo producto a la base de datos de json-server calculando secuencialmente el ID.
+   * @param producto Datos del producto sin el ID.
    */
-  guardarProductos(productos: Producto[]): void {
-    localStorage.setItem(this.STORAGE_PRODUCTS_KEY, JSON.stringify(productos));
+  agregarProducto(producto: Omit<Producto, 'id'>): Observable<Producto> {
+    return this.getProductos().pipe(
+      switchMap(productos => {
+        const idsNumericos = productos
+          .map(p => Number(p.id))
+          .filter(id => !isNaN(id));
+        const nuevoId = idsNumericos.length > 0 ? Math.max(...idsNumericos) + 1 : 11;
+        const productoConId = { ...producto, id: String(nuevoId) };
+        return this.http.post<Producto>(`${this.getApiUrl()}/productos`, productoConId as any).pipe(
+          map(p => ({
+            ...p,
+            id: isNaN(Number(p.id)) ? p.id : Number(p.id)
+          }))
+        );
+      })
+    );
   }
 
   /**
-   * Busca y retorna una figura específica por su identificador numérico.
-   * @param id Identificador único del producto.
-   * @returns El objeto de tipo Producto o undefined si no es hallado.
+   * Actualiza los datos de un producto existente.
+   * @param producto Objeto del producto con su respectivo ID.
    */
-  getProductById(id: number): Producto | undefined {
-    return this.getProductos().find(p => p.id === id);
+  actualizarProducto(producto: Producto): Observable<Producto> {
+    const payload = { ...producto, id: String(producto.id) };
+    return this.http.put<Producto>(`${this.getApiUrl()}/productos/${producto.id}`, payload as any).pipe(
+      map(p => ({
+        ...p,
+        id: isNaN(Number(p.id)) ? p.id : Number(p.id)
+      }))
+    );
   }
 
   /**
-   * Registra una nueva figura coleccionable en el sistema asignándole un ID incremental.
-   * @param producto Objeto del producto con sus propiedades excluyendo el ID.
+   * Elimina un producto por su ID.
+   * @param id ID del producto a borrar.
    */
-  agregarProducto(producto: Omit<Producto, 'id'>): void {
-    const productos = this.getProductos();
-    const nuevoId = productos.length > 0 ? Math.max(...productos.map(p => p.id)) + 1 : 1;
-    const nuevoProducto: Producto = { ...producto, id: nuevoId };
-    productos.push(nuevoProducto);
-    this.guardarProductos(productos);
+  eliminarProducto(id: number | string): Observable<void> {
+    return this.http.delete<void>(`${this.getApiUrl()}/productos/${id}`);
   }
 
   /**
-   * Modifica los datos de una figura existente en el inventario local.
-   * @param productoActualizado Objeto producto con el ID correspondiente y sus nuevos datos.
+   * Descuenta stock de un producto realizando un PATCH dinámico.
+   * @param id ID del producto.
+   * @param cantidadADescontar Unidades a restar del stock.
    */
-  actualizarProducto(productoActualizado: Producto): void {
-    const productos = this.getProductos();
-    const idx = productos.findIndex(p => p.id === productoActualizado.id);
-    if (idx !== -1) {
-      productos[idx] = { ...productos[idx], ...productoActualizado };
-      this.guardarProductos(productos);
-    }
-  }
-
-  /**
-   * Elimina un producto del catálogo por su ID.
-   * @param id Identificador de la figura a remover.
-   */
-  eliminarProducto(id: number): void {
-    const productos = this.getProductos();
-    const filtrados = productos.filter(p => p.id !== id);
-    this.guardarProductos(filtrados);
-  }
-
-  /**
-   * Descuenta la cantidad comprada del stock físico actual de un producto.
-   * @param id Identificador del producto comprado.
-   * @param cantidadADescontar Número de unidades a restar del inventario.
-   */
-  actualizarStock(id: number, cantidadADescontar: number): void {
-    const productos = this.getProductos();
-    const idx = productos.findIndex(p => p.id === id);
-    if (idx !== -1) {
-      productos[idx].stock = Math.max(0, productos[idx].stock - cantidadADescontar);
-      this.guardarProductos(productos);
-    }
+  actualizarStock(id: number | string, cantidadADescontar: number): Observable<Producto> {
+    return this.getProductById(id).pipe(
+      switchMap(prod => {
+        const nuevoStock = Math.max(0, prod.stock - cantidadADescontar);
+        return this.http.patch<Producto>(`${this.getApiUrl()}/productos/${id}`, { stock: nuevoStock }).pipe(
+          map(p => ({
+            ...p,
+            id: isNaN(Number(p.id)) ? p.id : Number(p.id)
+          }))
+        );
+      })
+    );
   }
 }

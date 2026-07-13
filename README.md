@@ -13,10 +13,14 @@ Este es un proyecto de aplicación web sobre una tienda en línea de figuras de 
 *   **Pasarela de pago asíncrona:** Procesamiento de compra interactivo que realiza la actualización de stock en caliente en la base de datos REST mediante peticiones HTTP asíncronas.
 *   **Historial de Pedidos:** Sección de "Mis Pedidos" para revisar las compras realizadas y sus datos de envío.
 
+<img width="2560" height="1392" alt="Snag_395c24" src="https://github.com/user-attachments/assets/82e85d47-73b5-4a52-89a6-77ca01dac611" />
+
 ### 👑 Perfil de Administrador
 *   **Dashboard de Métricas:** Visualización en tiempo real de ingresos totales facturados, alertas de bajo stock crítico (≤ 3 unidades) y top de productos más vendidos.
 *   **Control de Inventario:** Modificación rápida de stock con botones de incremento/decremento y guardado instantáneo sincronizado con el servidor.
 *   **Mantenimiento (CRUD completo):** Creación de nuevos productos con generación de IDs secuenciales numéricos en el cliente, modificación de atributos y eliminación con retroalimentación Toast flotante inmediata.
+
+<img width="1920" height="1032" alt="Snag_3a618e" src="https://github.com/user-attachments/assets/c7343110-c44c-4147-b254-e887e7bbc402" />
 
 ---
 
@@ -61,6 +65,8 @@ Para levantar y compilar el entorno completo de forma limpia, sigue estos comand
     *   👉 **Aplicación Frontend:** [http://localhost:8080](http://localhost:8080)
     *   👉 **Catálogo Directo (Enrutamiento Angular):** [http://localhost:8080/tienda-multiverso](http://localhost:8080/tienda-multiverso)
     *   👉 **API REST (Reverse Proxy Nginx):** [http://localhost:8080/tienda-multiverso-json-server/productos](http://localhost:8080/tienda-multiverso-json-server/productos)
+        
+<img width="1618" height="839" alt="Snag_38b12f" src="https://github.com/user-attachments/assets/36e1dcce-5a86-49d0-a6d5-5e6701c3600f" />
 
 ---
 
@@ -68,7 +74,8 @@ Para levantar y compilar el entorno completo de forma limpia, sigue estos comand
 
 Para validar el correcto funcionamiento de los servicios mockeados y flujos de negocio sin depender de la base de datos REST física, ejecuta en tu terminal local:
 ```bash
-npm run test
+npm run test -- --watch=false
 ```
-*(Todos los casos de prueba de Vitest están integrados y validados en verde).*
+<img width="769" height="414" alt="Snag_34951e" src="https://github.com/user-attachments/assets/02bb9775-dbf9-48fe-8d99-554a72ac4b2c" />
+
 

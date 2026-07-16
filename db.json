@@ -85,7 +85,7 @@
       "nombre": "Scarlet Spider",
       "serie": "Marvel Comics - Spider-Man",
       "precio": 11990,
-      "stock": 10,
+      "stock": 9,
       "descripcion": "Scarlet Spider (Clon de Spider-Man). Figura de Spider-Man de la serie animada de los 90s.",
       "imagen": "img/Scarlet Spider.jpg",
       "categoria": "Spider-Man"
@@ -101,14 +101,14 @@
       "categoria": "Villanos"
     },
     {
-      "nombre": "STORM",
-      "serie": "MARVEL",
+      "id": "11",
+      "nombre": "Storm",
+      "serie": "Marvel legends",
       "categoria": "X-Men",
-      "precio": 30000,
+      "precio": 25000,
       "stock": 9,
-      "descripcion": "X-MEN STORM",
-      "imagen": "img/default.jpg",
-      "id": "11"
+      "descripcion": "Storm Marvel legends",
+      "imagen": "img/default.jpg"
     }
   ]
 }

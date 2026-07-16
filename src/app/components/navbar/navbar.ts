@@ -25,7 +25,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.usuarioActual = this.authService.getUsuarioActual();
+    // Subscribe to current user changes in real-time
+    this.subscriptions.add(
+      this.authService.user$.subscribe(user => {
+        this.usuarioActual = user;
+        this.cdr.detectChanges(); // Forzar actualización de vista
+      })
+    );
     
     // Subscribe to cart changes
     this.subscriptions.add(

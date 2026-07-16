@@ -19,7 +19,7 @@
             {{ errorMessage }}
           </div>
 
-          <form [formGroup]="registroForm" (ngSubmit)="registrar()">
+          <form [formGroup]="registroForm" (ngSubmit)="registrar()" autocomplete="off">
             <div class="row g-3">
               
               <!-- Nombre -->
@@ -33,7 +33,7 @@
               <!-- Correo -->
               <div class="col-12 col-md-6">
                 <label class="form-label">Correo electrónico</label>
-                <input type="email" class="form-control" formControlName="email" placeholder="ejemplo@correo.com"
+                <input type="email" class="form-control" formControlName="email" placeholder="ejemplo@correo.com" autocomplete="new-password"
                        [ngClass]="{'is-invalid': registroForm.get('email')?.touched && registroForm.get('email')?.invalid}"/>
                 <div class="invalid-feedback">Ingresa un correo electrónico válido.</div>
               </div>
@@ -42,7 +42,7 @@
               <div class="col-12 col-md-6">
                 <label class="form-label">Contraseña</label>
                 <div class="input-group">
-                  <input [type]="showPassword ? 'text' : 'password'" class="form-control" formControlName="password" placeholder="Mín. 8 caracteres"
+                  <input [type]="showPassword ? 'text' : 'password'" class="form-control" formControlName="password" placeholder="Mín. 8 caracteres" autocomplete="new-password"
                          [ngClass]="{'is-invalid': registroForm.get('password')?.touched && (registroForm.get('password')?.invalid || !isPasswordValid())}"/>
                   <button class="btn btn-outline-secondary" type="button" (click)="togglePasswordVisibility()" title="Mostrar/Ocultar">
                     {{ showPassword ? '🙈' : '👁' }}
@@ -73,7 +73,7 @@
               <div class="col-12 col-md-6">
                 <label class="form-label">Confirmar Contraseña</label>
                 <div class="input-group">
-                  <input [type]="showConfirmPassword ? 'text' : 'password'" class="form-control" formControlName="confirmPassword" placeholder="Repite tu contraseña"
+                  <input [type]="showConfirmPassword ? 'text' : 'password'" class="form-control" formControlName="confirmPassword" placeholder="Repite tu contraseña" autocomplete="new-password"
                          [ngClass]="{'is-invalid': registroForm.get('confirmPassword')?.touched && (registroForm.get('confirmPassword')?.invalid || registroForm.hasError('passwordsNotMatching'))}"/>
                   <button class="btn btn-outline-secondary" type="button" (click)="toggleConfirmPasswordVisibility()" title="Mostrar/Ocultar">
                     {{ showConfirmPassword ? '🙈' : '👁' }}

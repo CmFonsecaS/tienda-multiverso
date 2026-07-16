@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Usuario } from '../interfaces/usuario';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 /**
  * @description
@@ -14,6 +15,9 @@ export class AuthService {
   private readonly STORAGE_USERS_KEY = 'marvel_usuarios';
   private readonly STORAGE_CURRENT_USER_KEY = 'marvel_usuario_actual';
   private readonly RECORDAR_EMAIL_KEY = 'marvel_recordar_email';
+
+  private userSubject = new BehaviorSubject<Usuario | null>(null);
+  user$: Observable<Usuario | null> = this.userSubject.asObservable();
 
   private readonly USUARIOS_INICIALES: Usuario[] = [
     {
@@ -38,6 +42,7 @@ export class AuthService {
 
   constructor() {
     this.inicializarUsuarios();
+    this.userSubject.next(this.getUsuarioActual());
   }
 
   /**
@@ -85,6 +90,7 @@ export class AuthService {
     } else {
       sessionStorage.removeItem(this.STORAGE_CURRENT_USER_KEY);
     }
+    this.userSubject.next(usuario);
   }
 
   /**

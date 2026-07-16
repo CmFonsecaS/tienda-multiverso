@@ -1,4 +1,4 @@
-# TIENDA MULTIVERSO 🌌
+# TIENDA MULTIVERSO: Versión final EFT 🌌
 
 Este es un proyecto de aplicación web sobre una tienda en línea de figuras de colección del Universo de Marvel, migrado completamente a una arquitectura basada en microservicios contenerizados y consumo de API REST.
 
